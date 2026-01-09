@@ -5,21 +5,6 @@
 #include "ncurses_app.hpp"
 #include "proc.hpp"
 
-// PHASE 0 — FOUNDATION
-// TODO: Create a struct for pet stats (hunger, happiness, energy, cleanliness)
-// TODO: Create a struct for system metrics (cpu, memory, disk, uptime)
-// TODO: Create a struct for pet state that holds everything
-
-
-
-
-// TODO: Write function to read memory usage from /proc/meminfo
-// TODO: Write function to read disk space (use statvfs or df command)
-// TODO: Write function to read uptime from /proc/uptime
-
-// TODO: Write function that translates system stats into pet needs
-//       Example: high CPU = hunger increases, low disk = cleanliness drops
-
 
 // PHASE 2 — STATE & PERSISTENCE
 // TODO: Write function to save pet state to a file
@@ -36,7 +21,7 @@
 
 
 int main() {
-    CpuTimes out;
+    CpuTimes cpuOut;
 
     NcursesApp app{};
     app.init();
@@ -49,7 +34,7 @@ int main() {
         app.beginFrame();
         app.drawBorder();
 
-       readProcStats(out);
+       readProcStats(cpuOut);
 
 
         // TODO PHASE 3: Draw UI here
