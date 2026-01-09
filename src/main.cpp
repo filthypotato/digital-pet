@@ -1,18 +1,30 @@
 /* main.cpp
    System Monitor Pet - Tamagotchi style
 */
-#include <vector>
-#include <string>
+
 #include "ncurses_app.hpp"
+#include "proc.hpp"
 
 // PHASE 0 — FOUNDATION
 // TODO: Create a struct for pet stats (hunger, happiness, energy, cleanliness)
 // TODO: Create a struct for system metrics (cpu, memory, disk, uptime)
 // TODO: Create a struct for pet state that holds everything
 
+// Move to a gameobject.hpp ?
+struct PetStats {
+  size_t hunger{}, happiness{}, energy{}, cleanliness{};
+};
 
-// PHASE 1 — CORE LOOP
-// TODO: Write function to read CPU usage from /proc/stat
+
+struct PetState {
+  PetStats pStats{};
+  SystemMetrics sMetrics{};
+
+  bool isAlive{}, isHungry{}, isHappy{}, hasEnergy{}, isClean{};
+
+};
+
+
 // TODO: Write function to read memory usage from /proc/meminfo
 // TODO: Write function to read disk space (use statvfs or df command)
 // TODO: Write function to read uptime from /proc/uptime
@@ -30,31 +42,37 @@
 
 // PHASE 3 — UI & INTERACTION
 // TODO: Draw the pet (simple ASCII art)
-// TODO: Draw stat bars for each need
+// TODO: Draw stat bars :for each need
 // TODO: Draw system metrics
 // TODO: Handle user commands (feed, play, sleep, clean)
 
 
 int main() {
-    NcursesApp app;
+    CpuTimes out;
+
+    NcursesApp app{};
     app.init();
 
     // TODO: Create your pet state variable here
-    
+
     // TODO: Try to load saved state, if it doesn't exist, create new pet
 
     while (app.running()) {
         app.beginFrame();
         app.drawBorder();
 
-        // TODO PHASE 1: Read system stats and update pet needs
-        
-        // TODO PHASE 3: Draw your UI here
+       readProcStats(out);
+
+
+        // TODO PHASE 3: Draw UI here
         // - pet visual
         // - stat bars
         // - system info
         // - event log
         // - commands
+        move(2, 0);
+        clrtoeol();
+        mvprintw(10, 25, "Press Q to quit.");
 
         // Handle input
         int ch = app.pollInput();
@@ -62,7 +80,7 @@ int main() {
             // TODO PHASE 2: Save before quitting
             app.stop();
         }
-        // TODO: Handle other commands (f, p, s, c)
+        // TODO: Handle other commands ([f]eed, [p]et, [s]leep, [c]are)
 
         app.endFrame();
     }
