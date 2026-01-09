@@ -5,6 +5,13 @@
 #include <ncurses.h>
 #include "proc.hpp"
 
+
+
+// TODO: Write function to read memory usage from /proc/meminfo
+// TODO: Write function to read disk space (use statvfs or df command)
+// TODO: Write function to read uptime from /proc/uptime
+
+
 // function to read CPU usage from /proc/stat
 
 bool readProcStats(CpuTimes& cpuOut) {

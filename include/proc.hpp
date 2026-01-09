@@ -22,4 +22,4 @@ struct SystemMetrics {
 };
 
 
-bool readProcStats(CpuTimes& out);
+bool readProcStats(CpuTimes& cpuOut);

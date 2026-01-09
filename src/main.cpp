@@ -10,19 +10,7 @@
 // TODO: Create a struct for system metrics (cpu, memory, disk, uptime)
 // TODO: Create a struct for pet state that holds everything
 
-// Move to a gameobject.hpp ?
-struct PetStats {
-  size_t hunger{}, happiness{}, energy{}, cleanliness{};
-};
 
-
-struct PetState {
-  PetStats pStats{};
-  SystemMetrics sMetrics{};
-
-  bool isAlive{}, isHungry{}, isHappy{}, hasEnergy{}, isClean{};
-
-};
 
 
 // TODO: Write function to read memory usage from /proc/meminfo
