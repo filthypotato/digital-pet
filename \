@@ -1,0 +1,100 @@
+/* main.cpp
+   Example usage with TODOs for building a game
+*/
+#include <vector>
+#include "ncurses_app.hpp"
+#include <ncurses.h>
+
+struct Player {
+  int x{}, y{};
+  char symbol{};
+
+  void movePlayer();
+};
+
+struct Enemy {
+  int x{}, y{};
+  char symbol{};
+  bool isAlive{};
+};
+
+
+const int PLAYER_START_X{10};
+const int PLAYER_START_Y{10};
+
+const int ENEMY_START_X{12};
+const int ENEMY_START_Y{12};
+
+
+
+
+// TODO: Add helper functions for game logic
+// Example: void movePlayer(Player& player, int dx, int dy) { ... }
+// Example: void updateEnemies(std::vector<Enemy>& enemies) { ... }
+// Example: bool checkCollision(Player& player, Enemy& enemy) { ... }
+
+int main() {
+    NcursesApp app;
+    app.init();
+
+    Player player = {PLAYER_START_X, PLAYER_START_Y, 'P'};
+
+    std::vector<Enemy> enemies;
+
+    int score{0};
+    int level{1};
+
+    while (app.running()) {
+        app.beginFrame();
+
+        // TODO: Draw game world
+        app.drawBorder();
+
+        // TODO: Draw player
+        mvaddch(player.y, player.x, player.symbol);
+
+        // TODO: Draw enemies
+        for (auto& enemy : enemies) {
+          if (enemy.isAlive) mvaddch(enemy.y, enemy.x, 'E');
+        }
+
+        // TODO: Draw UI elements (score, lives, etc.)
+        // Example: mvprintw(1, 2, "Score: %d", score);
+        // Example: mvprintw(1, 20, "Level: %d", level);
+
+        app.drawCenteredText(5, "ncurses starter template");
+        app.drawCenteredText(7, "Press Q to quit");
+
+        // TODO: Handle input for game controls
+        int ch = app.pollInput();
+        if (ch == 'q' || ch == 'Q') {
+            app.stop();
+        }
+        // TODO: Add movement controls
+        // Example: if (ch == KEY_UP) movePlayer(player, 0, -1);
+        // Example: if (ch == KEY_DOWN) movePlayer(player, 0, 1);
+        // Example: if (ch == KEY_LEFT) movePlayer(player, -1, 0);
+        // Example: if (ch == KEY_RIGHT) movePlayer(player, 1, 0);
+        // Example: if (ch == ' ') shoot();
+
+        // TODO: Update game logic
+        // Example: updateEnemies(enemies);
+        // Example: checkCollisions();
+        // Example: spawnNewEnemies();
+        // Example: updateProjectiles();
+
+        // TODO: Check win/lose conditions
+        // Example: if (player.health <= 0) { gameOver(); }
+        // Example: if (enemies.empty()) { nextLevel(); }
+
+        app.endFrame();
+    }
+
+    // TODO: Show final score or game over screen
+    // Example: clear();
+    // Example: mvprintw(LINES/2, COLS/2 - 10, "Final Score: %d", score);
+    // Example: refresh();
+    // Example: getch();
+
+    return 0;
+}
