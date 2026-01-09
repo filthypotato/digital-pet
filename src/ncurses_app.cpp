@@ -1,5 +1,5 @@
 /* ncurses_app.cpp
-   Implementation of reusable ncurses wrapper
+   Basic wrapper around ncurses library
 */
 
 #include "ncurses_app.hpp"
@@ -23,11 +23,9 @@ void NcursesApp::init() {
         start_color();
         use_default_colors();
 
-        // TODO: Initialize color pairs for your game
-        // Example: init_pair(1, COLOR_RED, COLOR_BLACK);     // Enemy color
-        // Example: init_pair(2, COLOR_GREEN, COLOR_BLACK);   // Player color
-        // Example: init_pair(3, COLOR_YELLOW, COLOR_BLACK);  // Collectible color
-        // Example: init_pair(4, COLOR_BLUE, COLOR_BLACK);    // UI color
+        // TODO PHASE 6: Set up color pairs if you want colors
+        // init_pair(1, COLOR_RED, COLOR_BLACK);
+        // init_pair(2, COLOR_GREEN, COLOR_BLACK);
     }
 }
 
@@ -69,36 +67,7 @@ void NcursesApp::stop() {
     m_running = false;
 }
 
-// TODO: Implement additional drawing methods
-// Example implementation of drawBox:
-// void NcursesApp::drawBox(int y, int x, int height, int width) {
-//     for (int i = 0; i < height; i++) {
-//         mvaddch(y + i, x, '|');
-//         mvaddch(y + i, x + width - 1, '|');
-//     }
-//     for (int i = 0; i < width; i++) {
-//         mvaddch(y, x + i, '-');
-//         mvaddch(y + height - 1, x + i, '-');
-//     }
-// }
-
-// TODO: Implement color methods
-// Example:
-// void NcursesApp::setColor(int colorPair) {
-//     attron(COLOR_PAIR(colorPair));
-// }
-
-// TODO: Implement screen dimension getters
-// Example:
-// int NcursesApp::getScreenWidth() const {
-//     return COLS;
-// }
-// int NcursesApp::getScreenHeight() const {
-//     return LINES;
-// }
-
-// TODO: Implement validation helpers
-// Example:
-// bool NcursesApp::isValidPosition(int y, int x) const {
-//     return (y > 0 && y < LINES - 1 && x > 0 && x < COLS - 1);
-// }
+// TODO PHASE 3 or later: Add helper functions you need
+// Maybe a function to draw a bar graph?
+// Maybe a function to draw a box?
+// Maybe a function to validate coordinates?
