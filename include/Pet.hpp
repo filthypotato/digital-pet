@@ -1,17 +1,51 @@
-
+// Pet.hpp
+// Data structures for the virtual pet's state
+#pragma once
 
 #include "proc.hpp"
+#include "Pet.hpp"
 
-
+// The pet's needs (like a real Tamagotchi)
+// Values range from 0-100 (100 is best)
 struct PetStats {
-  int hunger{50}, happiness{50}, energy{50}, cleanliness{50};
+    int hunger{50};       // How hungry the pet is (lower = more hungry)
+    int happiness{50};    // How happy the pet is
+    int energy{50};       // How much energy the pet has
+    int cleanliness{50};  // How clean the pet is
 };
 
-
+// Complete state of the pet
 struct PetState {
-  PetStats pStats{};
-  SystemMetrics sMetrics{};
+    PetStats pStats{};           // The pet's current needs
+    SystemMetrics sMetrics{};    // Current system metrics
+    CpuTimes cpuOut{};
 
-  bool isAlive{}, isHungry{}, isHappy{}, hasEnergy{}, isClean{};
 
+    // Status flags (calculated from stats)
+    bool isAlive{true};          // Is the pet still alive?
+    bool isHungry{false};        // Is hunger below threshold?
+    bool isHappy{true};          // Is happiness above threshold?
+    bool hasEnergy{true};        // Does pet have energy?
+    bool isClean{true};          // Is pet clean enough?
 };
+
+void feedPet(PetState& state);
+void playWithPet(PetState& state);
+void sleepPet(PetState& state);
+void cleanPet(PetState& state);
+
+
+
+
+// TODO: Add function to update pet stats based on system metrics
+//       Example: high CPU usage makes pet tired (lowers energy)
+//       Example: low disk space makes pet dirty (lowers cleanliness)
+
+// TODO: Add function to apply time-based decay to stats
+//       All stats should slowly decrease over time
+
+// TODO: Add function to handle user actions (feed, play, clean, sleep)
+//       These should increase the appropriate stat
+
+// TODO: Add function to check if pet is dead (all stats too low?)
+
