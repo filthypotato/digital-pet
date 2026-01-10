@@ -1,102 +1,107 @@
 # System Monitor Pet 🐱💻
 
-A Tamagotchi-style virtual pet that lives in your terminal! Your pet's needs are affected by your computer's health.
+A Tamagotchi-style virtual pet that lives in your terminal. Your pet's needs respond to your computer's health (CPU, memory, disk), and you can interact using simple keyboard commands.
 
-## What This Does
+## Features
 
-- Shows a cute ASCII pet in your terminal
-- Pet has needs: hunger, happiness, energy, cleanliness
-- You can interact with your pet using keyboard commands
-- Pet's needs change based on your computer's CPU, memory, and disk usage
+- Cute ASCII pet rendered in terminal using ncurses
+- Pet stats: Hunger, Happiness, Energy, Cleanliness
+- Keyboard controls for interacting with your pet
+- Reads system information from /proc to influence pet behavior (work in progress)
+- Event log system and basic UI
 
-## Files Overview
+## Repository contents
 
-- **main.cpp** - Main game loop and program entry point
-- **ncurses_app.hpp/cpp** - Wrapper for ncurses library (handles terminal UI)
-- **proc.hpp/cpp** - Reads system information from /proc filesystem
-- **Pet.hpp/cpp** - Pet state and behavior logic
-- **Renderer.hpp/cpp** - Draws everything on screen
-- **Makefile** - Build instructions
+- main.cpp - Main game loop and entry point
+- ncurses_app.hpp / ncurses_app.cpp - ncurses wrapper (terminal UI)
+- proc.hpp / proc.cpp - Read system information from /proc filesystem
+- Pet.hpp / Pet.cpp - Pet state and behavior logic
+- Renderer.hpp / Renderer.cpp - Drawing and rendering logic
+- Makefile - Build instructions
 
-## How to Build
+## Prerequisites
 
-You need ncurses library installed:
+You need the ncurses development libraries installed.
+
+On Ubuntu/Debian:
 ```bash
-# On Ubuntu/Debian:
 sudo apt-get install libncurses5-dev libncursesw5-dev
+```
 
-# On Fedora:
+On Fedora:
+```bash
 sudo dnf install ncurses-devel
+```
 
-# On macOS:
+On macOS (Homebrew):
+```bash
 brew install ncurses
 ```
 
-Then compile:
+## Build
+
+Compile the project with make:
+
 ```bash
 make
 ```
 
-## How to Run
+This builds the `pet` executable.
+
+## Run
+
+Start the pet in your terminal:
 
 ```bash
 ./pet
 ```
 
+If your terminal becomes unresponsive after an abnormal exit, run `reset` to restore state.
+
 ## Controls
 
-- **F** - Feed your pet
-- **P** - Play with your pet
-- **S** - Put pet to sleep
-- **C** - Clean your pet
-- **Q** - Quit
+- F — Feed your pet
+- P — Play with your pet
+- S — Put the pet to sleep
+- C — Clean your pet
+- Q — Quit the application
+
+Controls are case-insensitive.
 
 ## Current Status
 
-This is a work-in-progress! Many features are marked with `// TODO:` comments.
+This project is a work-in-progress. The UI, input handling, and basic rendering are implemented, but system metrics and gameplay logic are still being developed.
 
-### What Works Now:
-✅ Terminal UI with ncurses
-✅ Basic rendering (pet sprite, stat bars, commands)
-✅ Reading CPU times from /proc/stat
-✅ User input handling
-✅ Event log system
+What works:
 
-### What's Not Implemented Yet:
-❌ Calculating actual CPU/memory/disk percentages
-❌ Pet stat changes based on system metrics
-❌ Time-based stat decay
-❌ Save/load system
-❌ Pet actions actually changing stats
-❌ Pet death condition
-❌ Colors
-❌ Different pet moods/sprites
+- Terminal UI with ncurses
+- Basic rendering (pet sprite, stat bars, commands)
+- Reading CPU times from /proc/stat
+- User input handling
+- Event log system
 
-## Learning Path
+Planned / TODOs:
 
-Follow the TODO comments in the code! They're organized into phases:
+- Calculate CPU / memory / disk usage percentages
+- Drive pet stat changes from system metrics
+- Time-based stat decay and pet actions that modify stats
+- Save / load functionality
+- Pet death condition and different moods/sprites
+- Colors and improved visuals
 
-1. **Phase 1** - Get system monitoring working (CPU, memory, disk)
-2. **Phase 2** - Add save/load functionality
-3. **Phase 3** - Implement pet actions (feed, play, etc)
-4. **Phase 4** - Connect system health to pet needs
-5. **Phase 5** - Add better visuals and colors
-6. **Phase 6** - Polish and extra features
+## Development notes
 
-## Tips
+Follow the // TODO comments in the code. A good starting point:
 
-- Read through the comments in each file to understand what each function does
-- Start with the TODOs in `proc.cpp` to get system monitoring working
-- Then move to `Pet.cpp` to implement pet behavior
-- Test frequently! Run `make && ./pet` after each change
-- If something doesn't compile, read the error message carefully
+1. Implement system metric calculations in proc.cpp (CPU, memory, disk)
+2. Hook metrics into Pet.cpp to modify pet stats
+3. Add persistence (save/load)
+4. Polish UI and add colors
 
-## Example TODO to Start With
+Example function to implement in proc.cpp:
 
-In `proc.cpp`, try implementing this function:
 ```cpp
 int calculateCpuPercentage(const CpuTimes& prev, const CpuTimes& curr) {
-    // Calculate difference in total time
     unsigned long prevTotal = prev.user + prev.nice + prev.system + 
                               prev.idle + prev.iowait + prev.irq + 
                               prev.softirq + prev.steal;
@@ -104,14 +109,22 @@ int calculateCpuPercentage(const CpuTimes& prev, const CpuTimes& curr) {
                               curr.idle + curr.iowait + curr.irq + 
                               curr.softirq + curr.steal;
     unsigned long totalDiff = currTotal - prevTotal;
-    
-    // Calculate difference in idle time
     unsigned long idleDiff = curr.idle - prev.idle;
-    
-    // Calculate CPU usage percentage
     if (totalDiff == 0) return 0;
     return 100 * (totalDiff - idleDiff) / totalDiff;
 }
 ```
 
-Happy coding! 🚀
+## Contributing
+
+Contributions are welcome! If you'd like to help:
+
+- Browse issues and TODOs in the code
+- Open issues for bugs or feature requests
+- Send a pull request with a focused change and tests where appropriate
+
+## License
+
+This repository does not currently include a license. Add a LICENSE file if you want to set one.
+
+Happy hacking! 🚀
