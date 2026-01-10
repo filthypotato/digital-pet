@@ -45,12 +45,6 @@ brew install ncurses
 
 ## Build
 
-Compile the project with make:
-
-```bash
-make
-```
-
 This builds the `pet` executable.
 
 ## Run
@@ -120,16 +114,7 @@ int calculateCpuPercentage(const CpuTimes& prev, const CpuTimes& curr) {
 }
 ```
 
-## Contributing
-
-Contributions are welcome! If you'd like to help:
-
-- Browse issues and TODOs in the code
-- Open issues for bugs or feature requests
-- Send a pull request with a focused change and tests where appropriate
-
 ## License
 
 This repository does not currently include a license. Add a LICENSE file if you want to set one.
 
-Happy hacking! 🚀
