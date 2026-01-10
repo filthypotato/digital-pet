@@ -33,6 +33,11 @@ On Fedora:
 sudo dnf install ncurses-devel
 ```
 
+On Arch Linux:
+```bash
+sudo pacman -S ncurses
+```
+
 On macOS (Homebrew):
 ```bash
 brew install ncurses
