@@ -7,7 +7,7 @@
 
 // Read CPU usage statistics from /proc/stat
 // The first line of /proc/stat contains aggregate CPU times
-bool readProcStats(CpuTimes& cpuOut) {
+bool readCpuStats(CpuTimes& cpuOut) {
     // Try to open /proc/stat
     std::ifstream file("/proc/stat");
     if (!file.is_open()) {
@@ -15,7 +15,7 @@ bool readProcStats(CpuTimes& cpuOut) {
     }
 
     // Read the first line (starts with "cpu")
-    std::string line;
+    std::string line{};
     if (!std::getline(file, line)) {
         return false;  // Failed to read line
     }
@@ -41,16 +41,43 @@ bool readProcStats(CpuTimes& cpuOut) {
 }
 
 
-// TODO: Write function to calculate CPU percentage
-//       Hint: Take two CpuTimes readings, compare the differences
-//       Formula: 100 * (total_diff - idle_diff) / total_diff
+// Reads memory statistics from /proc/meminfo
+// Looks for MemTotal and MemAvailable to calculate usage percentage
+bool readMemStats(MemInfo& memOut) {
 
-// TODO: Write function to read memory from /proc/meminfo
-//       Look for MemTotal and MemAvailable lines
-//       Calculate percentage used
+  std::ifstream memProc("/proc/meminfo");
+  if (!memProc.is_open()) {
+    return false;
+  }
+  std::string label{};
+  unsigned long long value{};
+  std::string unit{};
 
-// TODO: Write function to read disk space
-//       You can use statvfs() system call or parse df command output
+  while (memProc >> label >> value >> unit) {
+    if (label == "MemTotal:") {
+      memOut.memTotalKb = value;
+    } else if (label == "MemAvailable:") {
+      memOut.memAvailableKb = value;
+    }
+  }
+
+  return true;
+}
+
+// Calculates memory usage percentage
+int calcMemPercent(const MemInfo& memOut) {
+  if (memOut.memTotalKb == 0) return 0;
+  return static_cast<int>(
+      100.00 * (memOut.memTotalKb - memOut.memAvailableKb) / memOut.memTotalKb
+  );
+}
+
+
+
+// TODO: Write function to read disk space using statvfs() system call
+//       Example: statvfs("/", &stat) to get root filesystem info
+//       Calculate: used = (total - free) / total * 100
 
 // TODO: Write function to read uptime from /proc/uptime
 //       First number is total uptime in seconds
+//       Parse it and store in UptimeInfo struct

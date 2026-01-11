@@ -1,6 +1,7 @@
 // proc.hpp
 // Functions for reading system information from /proc filesystem
 #pragma once
+#include <cstdint>
 
 // Holds raw CPU time values from /proc/stat
 // All values are in "jiffies" (ticks of the system clock)
@@ -17,20 +18,44 @@ struct CpuTimes {
     unsigned long long guestNice{};  // Time spent running a low priority guest
 };
 
-// Simplified system metrics as percentages (0-100)
-struct SystemMetrics {
-    int cpu{};          // CPU usage percentage
-    int memory{};       // Memory usage percentage
-    int diskSpace{};    // Disk space used percentage
-    int currentUptime{}; // System uptime in seconds
+struct MemInfo {
+  unsigned long long memTotalKb{};
+  unsigned long long memAvailableKb{};
 };
 
-// Read CPU times from /proc/stat
-// Returns true if successful, false if file can't be read
-bool readProcStats(CpuTimes& cpuOut);
+struct UptimeInfo {
+  double uptimeSeconds{};
+};
 
+struct DiskInfo {
+  std::uint64_t totalBytes{};
+  std::uint64_t freeBytes{};
+};
+
+
+// Simplified system metrics as percentages (0-100)
+struct SystemMetrics {
+    int cpuPet{};          // CPU usage percentage
+    int memPet{};       // Memory usage percentage
+    int diskPet{};    // Disk space used percentage
+    int uptimeSeconds{}; // System uptime in seconds
+};
+
+// Fwd declarations
+
+bool readCpuStats(CpuTimes& cpuOut);
+bool readMemStats(MemInfo& memOut);
+bool readUptime(UptimeInfo& uptimeOut);
+bool readDiskInfo(const char *path, DiskInfo& diskOut);
 
 // TODO: Add function to calculate CPU percentage from two CpuTimes readings
-// TODO: Add function to read memory from /proc/meminfo
-// TODO: Add function to read disk space (maybe using statvfs)
-// TODO: Add function to read uptime from /proc/uptime
+int calcCpuPercent(const CpuTimes& prev, const CpuTimes& cur);
+
+// Implemented calcMemPercent()
+int calcMemPercent(const MemInfo& memOut);
+
+// TODO: Implement calcDiskPercent()
+int calcDiskPercent(const DiskInfo& diskOut);
+
+// TODO: Implement readDiskInfo() using statvfs
+// TODO: Implement readUptime() to read from /proc/uptime

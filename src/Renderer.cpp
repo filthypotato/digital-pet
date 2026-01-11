@@ -51,12 +51,17 @@ void Renderer::draw(const PetState& state) {
     drawCommands(m_height - 6, 2);            // Commands at bottom-left
     drawEventLog(m_height - 6, 35, 4);        // Log at bottom-right
 
-    // TEMP: /proc debug
+    // TEMP: /proc/cpu debug
     mvprintw(15, 2, "PROC cpu:");
     mvprintw(16, 2, "user:   %llu", state.cpuOut.user);
     mvprintw(17, 2, "system: %llu", state.cpuOut.system);
     mvprintw(18, 2, "idle:   %llu", state.cpuOut.idle);
     mvprintw(19, 2, "steal:  %llu", state.cpuOut.steal);
+
+    mvprintw(21, 2, "Proc mem:");
+    mvprintw(22, 2, "Total: %llu kB", state.memOut.memTotalKb);
+    mvprintw(23, 2, "Available: %llu kB", state.memOut.memAvailableKb);
+    mvprintw(24, 2, "Usage: %d%%", state.sMetrics.memPet);
 
     // Actually display everything (ncurses requires this)
     refresh();

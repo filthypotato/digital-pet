@@ -3,7 +3,6 @@
 #pragma once
 
 #include "proc.hpp"
-#include "Pet.hpp"
 
 // The pet's needs (like a real Tamagotchi)
 // Values range from 0-100 (100 is best)
@@ -19,6 +18,7 @@ struct PetState {
     PetStats pStats{};           // The pet's current needs
     SystemMetrics sMetrics{};    // Current system metrics
     CpuTimes cpuOut{};
+    MemInfo memOut{};
 
 
     // Status flags (calculated from stats)
@@ -29,6 +29,7 @@ struct PetState {
     bool isClean{true};          // Is pet clean enough?
 };
 
+// DONE: Implemented basic pet actions ✓
 void feedPet(PetState& state);
 void playWithPet(PetState& state);
 void sleepPet(PetState& state);
@@ -40,12 +41,16 @@ void cleanPet(PetState& state);
 // TODO: Add function to update pet stats based on system metrics
 //       Example: high CPU usage makes pet tired (lowers energy)
 //       Example: low disk space makes pet dirty (lowers cleanliness)
+//       Example: high memory usage makes pet hungry (lowers hunger stat)
 
 // TODO: Add function to apply time-based decay to stats
 //       All stats should slowly decrease over time
+//       Could use a decayStats(PetState& state, float deltaTime) function
 
-// TODO: Add function to handle user actions (feed, play, clean, sleep)
-//       These should increase the appropriate stat
+// TODO: Add function to update status flags (isHungry, isHappy, etc)
+//       Based on current stat values and thresholds
+//       Example: isHungry = (hunger < 30)
 
-// TODO: Add function to check if pet is dead (all stats too low?)
+// TODO: Add function to check if pet is dead
+//       Example: isDead = (hunger < 5 && energy < 5) || allStatsBelow10
 
