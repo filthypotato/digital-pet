@@ -17,7 +17,6 @@ A Tamagotchi-style virtual pet that lives in your terminal. Your pet's needs res
 - proc.hpp / proc.cpp - Read system information from /proc filesystem
 - Pet.hpp / Pet.cpp - Pet state and behavior logic
 - Renderer.hpp / Renderer.cpp - Drawing and rendering logic
-- Makefile - Build instructions
 
 ## Prerequisites
 
