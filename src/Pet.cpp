@@ -1,6 +1,7 @@
 #include <algorithm>
 #include "Pet.hpp"
 
+// clamps stats to avoid going under 0 or passed 100
 static void clamp(PetStats& s) {
     s.hunger      = std::clamp(s.hunger, 0, 100);
     s.happiness   = std::clamp(s.happiness, 0, 100);
@@ -9,28 +10,22 @@ static void clamp(PetStats& s) {
 }
 
 void feedPet(PetState& state) {
-    state.pStats.hunger += 15;        // less hungry
-    state.pStats.happiness += 2;
-    state.pStats.cleanliness -= 1;
-    clamp(state.pStats);
+    state.pStats.hunger += 15;        // increases hunger meter
+    clamp(state.pStats);    // clamp the stats
 }
 
 void playWithPet(PetState& state) {
-    state.pStats.happiness += 12;
-    state.pStats.energy -= 8;
-    state.pStats.hunger -= 5;
-    clamp(state.pStats);
+    state.pStats.happiness += 12;   // Increases happiness
+    clamp(state.pStats);          // clamps the stats
 }
 
 void sleepPet(PetState& state) {
-    state.pStats.energy += 20;
-    state.pStats.hunger -= 3;
-    clamp(state.pStats);
+    state.pStats.energy += 20;      // Increases engery
+    clamp(state.pStats);          // clamps the stats
 }
 
 void cleanPet(PetState& state) {
-    state.pStats.cleanliness += 20;
-    state.pStats.happiness -= 1;
-    clamp(state.pStats);
+    state.pStats.cleanliness += 20; // Increases cleanliness
+    clamp(state.pStats);        // clamps the stats
 }
 

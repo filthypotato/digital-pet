@@ -40,7 +40,23 @@ bool readCpuStats(CpuTimes& cpuOut) {
     return true;  // Successfully read all values
 }
 
-int calculateCpuPercentage(const CpuTimes& prev, const CpuTimes& curr) {
+unsigned long totalJiffies(const CpuTimes& c) {
+    return c.user
+         + c.nice
+         + c.system
+         + c.idle
+         + c.iowait
+         + c.irq
+         + c.softirq
+         + c.steal;
+}
+
+unsigned long idleJiffies(const CpuTimes& c) {
+    return c.idle + c.iowait;
+}
+
+// Function that calculate CPU percentage from two CpuTimes readings
+int calcCpuPercent(const CpuTimes& prev, const CpuTimes& curr) {
     unsigned long prevTotal = totalJiffies(prev);
     unsigned long currTotal = totalJiffies(curr);
 
@@ -56,7 +72,6 @@ int calculateCpuPercentage(const CpuTimes& prev, const CpuTimes& curr) {
 
 
 // Reads memory statistics from /proc/meminfo
-// Looks for MemTotal and MemAvailable to calculate usage percentage
 bool readMemStats(MemInfo& memOut) {
 
   std::ifstream memProc("/proc/meminfo");
@@ -67,6 +82,7 @@ bool readMemStats(MemInfo& memOut) {
   unsigned long long value{};
   std::string unit{};
 
+// Looks for MemTotal and MemAvailable to calculate usage percentage
   while (memProc >> label >> value >> unit) {
     if (label == "MemTotal:") {
       memOut.memTotalKb = value;
@@ -81,9 +97,8 @@ bool readMemStats(MemInfo& memOut) {
 // Calculates memory usage percentage
 int calcMemPercent(const MemInfo& memOut) {
   if (memOut.memTotalKb == 0) return 0;
-  return static_cast<int>(
-      100.00 * (memOut.memTotalKb - memOut.memAvailableKb) / memOut.memTotalKb
-  );
+  return static_cast<int>(100.00 *
+                         (memOut.memTotalKb - memOut.memAvailableKb) / memOut.memTotalKb);
 }
 
 

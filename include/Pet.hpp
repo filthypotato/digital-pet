@@ -19,7 +19,9 @@ struct PetState {
     SystemMetrics sMetrics{};    // Current system metrics
     CpuTimes cpuOut{};
     MemInfo memOut{};
+    CpuTimes prevCpu{};
 
+    bool hasPrevCpu{false};
 
     // Status flags (calculated from stats)
     bool isAlive{true};          // Is the pet still alive?
@@ -29,7 +31,7 @@ struct PetState {
     bool isClean{true};          // Is pet clean enough?
 };
 
-// DONE: Implemented basic pet actions ✓
+// Basic pet actions
 void feedPet(PetState& state);
 void playWithPet(PetState& state);
 void sleepPet(PetState& state);
@@ -39,18 +41,18 @@ void cleanPet(PetState& state);
 
 
 // TODO: Add function to update pet stats based on system metrics
-//       Example: high CPU usage makes pet tired (lowers energy)
-//       Example: low disk space makes pet dirty (lowers cleanliness)
-//       Example: high memory usage makes pet hungry (lowers hunger stat)
+//       - high CPU usage makes pet tired (lowers energy)
+//       - low disk space makes pet dirty (lowers cleanliness)
+//       - high memory usage makes pet hungry (lowers hunger stat)
 
 // TODO: Add function to apply time-based decay to stats
 //       All stats should slowly decrease over time
-//       Could use a decayStats(PetState& state, float deltaTime) function
+//       Use a decayStats(PetState& state, float deltaTime) function
 
 // TODO: Add function to update status flags (isHungry, isHappy, etc)
 //       Based on current stat values and thresholds
-//       Example: isHungry = (hunger < 30)
+//       - isHungry = (hunger < 30)
 
 // TODO: Add function to check if pet is dead
-//       Example: isDead = (hunger < 5 && energy < 5) || allStatsBelow10
+//       - isDead = (hunger < 5 && energy < 5) || allStatsBelow10
 

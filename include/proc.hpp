@@ -38,23 +38,18 @@ struct SystemMetrics {
     int cpuPet{};          // CPU usage percentage
     int memPet{};       // Memory usage percentage
     int diskPet{};    // Disk space used percentage
-    int uptimeSeconds{}; // System uptime in seconds
+    int uptimePet{}; // System uptime in seconds
 };
 
-// Fwd declarations
+// Fwd declarations from proc.cpp
 
 bool readCpuStats(CpuTimes& cpuOut);
 bool readMemStats(MemInfo& memOut);
 bool readUptime(UptimeInfo& uptimeOut);
 bool readDiskInfo(const char *path, DiskInfo& diskOut);
-
-// TODO: Add function to calculate CPU percentage from two CpuTimes readings
 int calcCpuPercent(const CpuTimes& prev, const CpuTimes& cur);
-
 int calcMemPercent(const MemInfo& memOut);
-
-// TODO: Implement calcDiskPercent()
 int calcDiskPercent(const DiskInfo& diskOut);
-
+unsigned long totalJiffies(const CpuTimes& c);
 // TODO: Implement readDiskInfo() using statvfs
 // TODO: Implement readUptime() to read from /proc/uptime

@@ -36,9 +36,12 @@ int main() {
 
         // Read current system stats from /proc/stat
         if (readCpuStats(state.cpuOut)) {
-            // Successfully read CPU times
-            // TODO: Store previous reading and calculate actual CPU percentage
-            state.sMetrics.cpuPet = 0;  // Will calculate this when we implement calcCpuPercent
+            // reads CPU times
+            if (state.hasPrevCpu) {
+              state.sMetrics.cpuPet = calcCpuPercent(state.prevCpu, state.cpuOut);
+            }
+            state.prevCpu = state.cpuOut;
+            state.hasPrevCpu = true;
         }
 
        if (readMemStats(state.memOut)) {
@@ -48,11 +51,11 @@ int main() {
 
 
         // HANDLE USER INPUT
-        int ch = app.pollInput();  // Get keyboard input (or ERR if none)
+        int ch = app.pollInput();  // Gets keyboard input
 
         if (ch == 'q' || ch == 'Q') {
             // User wants to quit
-            // TODO PHASE 2: Save pet state before quitting
+            // TODO: Save pet state before quitting
             app.stop();
         }
         else if (ch == 'f' || ch == 'F') {
@@ -90,32 +93,31 @@ int main() {
     return 0;
 }
 
-// TODO LIST FOR EXPANDING THE PROJECT
 
-// PHASE 1 - Basic System Monitoring:
+// First - Basic System Monitoring:
 // TODO: Implement calculateCpuPercentage() in proc.cpp (need to store previous CpuTimes)
 // TODO: Implement readDiskStats() in proc.cpp
 // TODO: Implement readUptime() in proc.cpp
 
-// PHASE 2 - Save/Load System:
+// Second - Save/Load System:
 // TODO: Create saveToFile() function to save pet state as JSON or binary
 // TODO: Create loadFromFile() function to load saved pet
 // TODO: Calculate time elapsed since last save
 // TODO: Apply stat decay based on time away
 
-// PHASE 3 - Pet Behavior:
+// Third - Pet Behavior:
 // TODO: Implement updatePetFromSystem() to link system health to pet needs
 // TODO: Implement decayStats() for time-based stat reduction
 // TODO: Implement updateStatusFlags() to set isHungry, isHappy, etc
 // TODO: Add pet death condition when stats get too low
 
-// PHASE 4 - Enhanced Visuals:
+// Fourth - Enhanced Visuals:
 // TODO: Add drawSystemInfo() to Renderer to show CPU/memory/disk in a nice panel
 // TODO: Add different pet sprites for different moods (happy, sad, tired)
 // TODO: Add color to stat bars (green = good, yellow = warning, red = critical)
 // TODO: Add animations or blinking to the pet
 
-// PHASE 5 - Polish:
+// Fifth - Polish:
 // TODO: Add sound effects (terminal beep?) for important events
 // TODO: Add achievements or milestones
 // TODO: Add pet name that user can choose
