@@ -2,7 +2,7 @@
 // Functions for reading system information from /proc filesystem
 #pragma once
 #include <cstdint>
-
+#include <string>
 // Holds raw CPU time values from /proc/stat
 // All values are in "jiffies" (ticks of the system clock)
 struct CpuTimes {
@@ -11,11 +11,6 @@ struct CpuTimes {
     unsigned long long system{};     // Time spent in kernel mode
     unsigned long long idle{};       // Time spent idle
     unsigned long long iowait{};     // Time waiting for I/O to complete
-    unsigned long long irq{};        // Time servicing interrupts
-    unsigned long long softirq{};    // Time servicing soft interrupts
-    unsigned long long steal{};      // Time spent in other OS (virtual machines)
-    unsigned long long guest{};      // Time spent running a guest OS
-    unsigned long long guestNice{};  // Time spent running a low priority guest
 };
 
 struct MemInfo {

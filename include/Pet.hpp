@@ -13,6 +13,15 @@ struct PetStats {
     int cleanliness{50};  // How clean the pet is
 };
 
+// add a pet mood struct
+
+struct PetMood {
+    std::string happy{};
+    std::string bored{};
+    std::string angry{};
+    std::string lazy{};
+};
+
 // Complete state of the pet
 struct PetState {
     PetStats pStats{};           // The pet's current needs
