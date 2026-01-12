@@ -40,6 +40,20 @@ bool readCpuStats(CpuTimes& cpuOut) {
     return true;  // Successfully read all values
 }
 
+int calculateCpuPercentage(const CpuTimes& prev, const CpuTimes& curr) {
+    unsigned long prevTotal = totalJiffies(prev);
+    unsigned long currTotal = totalJiffies(curr);
+
+    unsigned long totalDiff = currTotal - prevTotal;
+    unsigned long idleDiff  = idleJiffies(curr) - idleJiffies(prev);
+
+    if (totalDiff == 0) return 0;
+
+    // % busy = 1 - idle
+    return (int)(100UL * (totalDiff - idleDiff) / totalDiff);
+}
+
+
 
 // Reads memory statistics from /proc/meminfo
 // Looks for MemTotal and MemAvailable to calculate usage percentage

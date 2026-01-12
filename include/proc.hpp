@@ -51,7 +51,6 @@ bool readDiskInfo(const char *path, DiskInfo& diskOut);
 // TODO: Add function to calculate CPU percentage from two CpuTimes readings
 int calcCpuPercent(const CpuTimes& prev, const CpuTimes& cur);
 
-// Implemented calcMemPercent()
 int calcMemPercent(const MemInfo& memOut);
 
 // TODO: Implement calcDiskPercent()
