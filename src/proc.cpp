@@ -1,6 +1,7 @@
 // proc.cpp
 // Implementation of system monitoring functions
 #include "proc.hpp"
+#include "Pet.hpp"
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -144,10 +145,36 @@ bool readDiskInfo(const std::vector<const char*>& paths, DiskInfo& diskOut) {
     return true;
 }
 
+void readHardwareStats(PetState& state) {
+  // Read current system stats from /proc/stat
+  if (readCpuStats(state.cpuOut)) {
+    // reads CPU times
+    if (state.hasPrevCpu) {
+      state.sMetrics.cpuPet = calcCpuPercent(state.prevCpu, state.cpuOut);
+    }
+      state.prevCpu = state.cpuOut;
+      state.hasPrevCpu = true;
+    }
 
-// TODO: Write function to read disk space using statvfs() system call
-//       Example: statvfs("/", &stat) to get root filesystem info
-//       Calculate: used = (total - free) / total * 100
+    if (readMemStats(state.memOut)) {
+      // Successfully read memory stats and calculates percentage
+      state.sMetrics.memPet = calcMemPercent(state.memOut);
+    }
+
+    // Add file paths for ones you want to track specifically
+    // This is for Linux only for now.
+    const std::vector<const char*> diskPaths = {
+        "/mnt",
+        "/mnt/drive1",
+        "/home"
+    };
+
+    if (readDiskInfo(diskPaths, state.diskOut)) {
+      state.sMetrics.diskPet = state.diskOut.percentUsed;
+  }
+}
+
+
 
 // TODO: Write function to read uptime from /proc/uptime
 //       First number is total uptime in seconds

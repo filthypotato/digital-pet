@@ -23,47 +23,25 @@ int main() {
     Renderer renderer{};
     renderer.init();
 
-    // Pet starts with default stats (all at 50%)
+    // Loads PetState from saved file
     PetState state = loadGame();
 
     if (!state.isAlive) {
-      state.isAlive = true;  // Pet starts alive!
+      state.isAlive = true;  // Creats new pet if no saved file found
     }
 
 
     // Welcome message log
     renderer.pushEvent("Welcome! Your pet needs you!");
 
-    // MAIN GAME LOOP - runs until user quits
+    // The Main Game Loop - runs until user quits
     while (app.running()) {
         // Start of frame - clears the screen
         app.beginFrame();
 
-        // Read current system stats from /proc/stat
-        if (readCpuStats(state.cpuOut)) {
-            // reads CPU times
-            if (state.hasPrevCpu) {
-              state.sMetrics.cpuPet = calcCpuPercent(state.prevCpu, state.cpuOut);
-            }
-            state.prevCpu = state.cpuOut;
-            state.hasPrevCpu = true;
-        }
-
-        if (readMemStats(state.memOut)) {
-         // Successfully read memory stats and calculates percentage
-         state.sMetrics.memPet = calcMemPercent(state.memOut);
-        }
-
-        // TODO: Add file paths for ones you want to track specifically
-        const std::vector<const char*> diskPaths = {
-          "/mnt",
-          "/mnt/drive1",
-          "/home"
-        };
-
-        if (readDiskInfo(diskPaths, state.diskOut)) {
-          state.sMetrics.diskPet = state.diskOut.percentUsed;
-        }
+        // Reads hardware stats for CPU, Memory, Disk Space, and Uptime
+        // find functions in proc.cpp/.hpp
+        readHardwareStats(state);
 
         // find keys in Input.cpp
         keyboardInput(app, renderer, state);
