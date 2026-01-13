@@ -6,6 +6,7 @@ out/
 bin/
 dist/
 .cache/
+savegame.dat
 
 *.o
 *.obj

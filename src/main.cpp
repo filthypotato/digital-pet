@@ -3,30 +3,35 @@
    A virtual pet whose needs are affected by your computer's health
 */
 
+#include "Input.hpp"
 #include "ncurses_app.hpp"
 #include "proc.hpp"
 #include "Renderer.hpp"
 #include "Pet.hpp"
+#include "Load_Save.hpp"
 #include <chrono>
 #include <thread>
-
+#include <iostream>
 // MAIN GAME LOOP
 
 int main() {
-    // Initialize ncurses for terminal UI
+    // ncurses for terminal UI
     NcursesApp app{};
     app.init();
 
-    // Initialize the renderer for drawing
+    // Renderer for drawing
     Renderer renderer{};
     renderer.init();
 
-    // Create the pet with default stats (all at 50%)
-    PetState state{};
-    state.isAlive = true;  // Pet starts alive!
+    // Pet starts with default stats (all at 50%)
+    PetState state = loadGame();
+
+    if (!state.isAlive) {
+      state.isAlive = true;  // Pet starts alive!
+    }
 
 
-    // Welcome message to the log
+    // Welcome message log
     renderer.pushEvent("Welcome! Your pet needs you!");
 
     // MAIN GAME LOOP - runs until user quits
@@ -60,30 +65,8 @@ int main() {
           state.sMetrics.diskPet = state.diskOut.percentUsed;
         }
 
-        // HANDLE USER INPUT
-        int ch = app.pollInput();  // Gets keyboard input
-
-        if (ch == 'q' || ch == 'Q') {
-            // User wants to quit
-            // TODO: Save pet state before quitting
-            app.stop();
-        }
-        else if (ch == 'f' || ch == 'F') {
-            feedPet(state);
-            renderer.pushEvent("You fed your pet!");
-        }
-        else if (ch == 'p' || ch == 'P') {
-            playWithPet(state);
-            renderer.pushEvent("You played with your pet!");
-        }
-        else if (ch == 's' || ch == 'S') {
-            sleepPet(state);
-            renderer.pushEvent("Your pet is sleeping...");
-        }
-        else if (ch == 'c' || ch == 'C') {
-            cleanPet(state);
-            renderer.pushEvent("You cleaned your pet!");
-        }
+        // find keys in Input.cpp
+        keyboardInput(app, renderer, state);
 
         // UPDATE PET STATE
         // TODO: Call function to update pet stats based on system metrics
@@ -99,7 +82,12 @@ int main() {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
-    // Cleanup and exit
+    // exits ncurses
+    app.shutdown();
+
+    // fully clears screen to avoid UI sticking when quiting
+    std::cout << "\033[2J\033[H" << std::flush;
+
     return 0;
 }
 
@@ -108,8 +96,6 @@ int main() {
 // TODO: Implement readUptime() in proc.cpp
 
 // Second - Save/Load System:
-// TODO: Create saveToFile() function to save pet state as JSON or binary
-// TODO: Create loadFromFile() function to load saved pet
 // TODO: Calculate time elapsed since last save
 // TODO: Apply stat decay based on time away
 

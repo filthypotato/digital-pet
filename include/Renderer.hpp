@@ -25,6 +25,8 @@ public:
     // Add a message to the event log
     void pushEvent(std::string msg);
 
+    void clearEvents();
+
 private:
     // Draw the window frame and title
     void drawFrame();

@@ -65,20 +65,20 @@ void Renderer::draw(const PetState& state) {
     drawEventLog(m_height - 25, 35, 4);        // Log at bottom-right
 
     // TEMP: /proc/cpu debug
-    mvprintw(15, 2, "PROC cpu:");
+    mvprintw(15, 2, "CPU Info:");
     mvprintw(16, 2, "User:   %llu", state.cpuOut.user);
     mvprintw(17, 2, "System: %llu", state.cpuOut.system);
     mvprintw(18, 2, "Idle:   %llu", state.cpuOut.idle);
     mvprintw(19, 2, "Usage: %d%%", state.sMetrics.cpuPet);
 
     // /proc/meminfo
-    mvprintw(21, 2, "PROC mem:");
+    mvprintw(21, 2, "Memory Info:");
     mvprintw(22, 2, "Total: %llu kB", state.memOut.memTotalKb);
     mvprintw(23, 2, "Available: %llu kB", state.memOut.memAvailableKb);
     mvprintw(24, 2, "Usage: %d%%", state.sMetrics.memPet);
 
     // statvfs for disk spaces
-    mvprintw(26, 2, "Disk Space:");
+    mvprintw(26, 2, "Disk Space Info:");
     printBytes(27, 2, "Total", state.diskOut.totalBytes);
     printBytes(28, 2, "Available", state.diskOut.availBytes);
     printBytes(29, 2, "Used", state.diskOut.usedBytes);
@@ -91,8 +91,8 @@ void Renderer::draw(const PetState& state) {
 
 // Draw the border and title
 void Renderer::drawFrame() {
-    box(stdscr, 0, 0);                        // Draw border around screen
-    mvprintw(0, 2, " digital-pet ");          // Title in top border
+    box(stdscr, 0, 0);                        // Draws a little border around the screen
+    mvprintw(0, 2, " digital-pet ");          // Creates the title in top left border
 }
 
 // Draw the pet's ASCII art
@@ -132,7 +132,7 @@ void Renderer::drawStats(const PetState& state, int y, int x) {
     drawBar(y + 4, x, "Energy",      state.pStats.energy,      20);
     drawBar(y + 5, x, "Cleanliness", state.pStats.cleanliness, 20);
 
-    // Show if the pet is alive
+    // Shows if the pet is alive
     mvprintw(y + 7, x, "Alive: %s", state.isAlive ? "yes" : "no");
 
 
@@ -172,7 +172,7 @@ void Renderer::drawBar(int y, int x, const std::string& label, int value, int wi
     // Draw the label and opening bracket
     mvprintw(y, x, "%-11s [", label.c_str());
 
-    // Draw the bar itself
+    // Draws the bar
     for (int i = 0; i < width; i++) {
         addch(i < filled ? '#' : ' ');  // '#' for filled, ' ' for empty
     }
@@ -182,12 +182,18 @@ void Renderer::drawBar(int y, int x, const std::string& label, int value, int wi
     printw(" %3d", value);
 }
 
-// Draw a label with its value (FIXED: added width parameter)
+// Draw a label with its value
 void Renderer::drawLabelValue(int y, int x, const std::string& label,
                               const std::string& value, int width) {
     (void)width;  // Not used yet, but here for future formatting
     mvprintw(y, x, "%s: %s", label.c_str(), value.c_str());
 }
+
+void Renderer::clearEvents() {
+    m_events.clear();
+}
+
+
 
 // TODO: Add drawSystemInfo implementation to show CPU, memory, etc.
 // TODO: Add color to bars (red for low, green for high)
