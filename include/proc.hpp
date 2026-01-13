@@ -2,7 +2,8 @@
 // Functions for reading system information from /proc filesystem
 #pragma once
 #include <cstdint>
-#include <string>
+#include <string> // for pet.hpp
+#include <vector>
 // Holds raw CPU time values from /proc/stat
 // All values are in "jiffies" (ticks of the system clock)
 struct CpuTimes {
@@ -11,20 +12,23 @@ struct CpuTimes {
     unsigned long long system{};     // Time spent in kernel mode
     unsigned long long idle{};       // Time spent idle
     unsigned long long iowait{};     // Time waiting for I/O to complete
+    unsigned long long steal{};      // Time stolen from VMs
 };
 
 struct MemInfo {
-  unsigned long long memTotalKb{};
-  unsigned long long memAvailableKb{};
+    unsigned long long memTotalKb{};
+    unsigned long long memAvailableKb{};
 };
 
 struct UptimeInfo {
-  double uptimeSeconds{};
+    double uptimeSeconds{};
 };
 
 struct DiskInfo {
-  std::uint64_t totalBytes{};
-  std::uint64_t freeBytes{};
+    std::uint64_t totalBytes{};
+    std::uint64_t availBytes{};
+    std::uint64_t usedBytes{};
+    int percentUsed{};
 };
 
 
@@ -36,15 +40,14 @@ struct SystemMetrics {
     int uptimePet{}; // System uptime in seconds
 };
 
-// Fwd declarations from proc.cpp
 
+// Fwd declarations from proc.cpp
 bool readCpuStats(CpuTimes& cpuOut);
 bool readMemStats(MemInfo& memOut);
 bool readUptime(UptimeInfo& uptimeOut);
-bool readDiskInfo(const char *path, DiskInfo& diskOut);
+bool readDiskInfo(const std::vector<const char*>& paths, DiskInfo& diskOut);
 int calcCpuPercent(const CpuTimes& prev, const CpuTimes& cur);
 int calcMemPercent(const MemInfo& memOut);
 int calcDiskPercent(const DiskInfo& diskOut);
 unsigned long totalJiffies(const CpuTimes& c);
-// TODO: Implement readDiskInfo() using statvfs
 // TODO: Implement readUptime() to read from /proc/uptime

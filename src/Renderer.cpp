@@ -5,6 +5,19 @@
 #include "Pet.hpp"
 #include <ncurses.h>
 #include <algorithm>
+#include <inttypes.h>
+
+
+static void printBytes(int y, int x, const char* label, std::uint64_t bytes) {
+    if (bytes >= (1ULL << 30)) {
+        mvprintw(y, x, "%s: %.2f GiB", label, bytes / 1073741824.0);
+    } else if (bytes >= (1ULL << 20)) {
+        mvprintw(y, x, "%s: %.2f MiB", label, bytes / 1048576.0);
+    } else {
+        mvprintw(y, x, "%s: %.2f KiB", label, bytes / 1024.0);
+    }
+}
+
 
 // ASCII art for the pet (a simple cat)
 static const char* CAT_ART = R"(
@@ -58,12 +71,19 @@ void Renderer::draw(const PetState& state) {
     mvprintw(18, 2, "Idle:   %llu", state.cpuOut.idle);
     mvprintw(19, 2, "Usage: %d%%", state.sMetrics.cpuPet);
 
+    // /proc/meminfo
     mvprintw(21, 2, "PROC mem:");
     mvprintw(22, 2, "Total: %llu kB", state.memOut.memTotalKb);
     mvprintw(23, 2, "Available: %llu kB", state.memOut.memAvailableKb);
     mvprintw(24, 2, "Usage: %d%%", state.sMetrics.memPet);
 
-    // Actually display everything (ncurses requires this)
+    printBytes(27, 2, "Total", state.diskOut.totalBytes);
+    printBytes(28, 2, "Available", state.diskOut.availBytes);
+    printBytes(29, 2, "Used", state.diskOut.usedBytes);
+
+
+
+    // Display everything (ncurses requires this)
     refresh();
 }
 

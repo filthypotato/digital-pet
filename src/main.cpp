@@ -26,7 +26,7 @@ int main() {
     state.isAlive = true;  // Pet starts alive!
 
 
-    // Add a welcome message to the log
+    // Welcome message to the log
     renderer.pushEvent("Welcome! Your pet needs you!");
 
     // MAIN GAME LOOP - runs until user quits
@@ -44,11 +44,21 @@ int main() {
             state.hasPrevCpu = true;
         }
 
-       if (readMemStats(state.memOut)) {
-         // Successfully read memory stats, now calculate percentage
+        if (readMemStats(state.memOut)) {
+         // Successfully read memory stats and calculates percentage
          state.sMetrics.memPet = calcMemPercent(state.memOut);
-       }
+        }
 
+
+const std::vector<const char*> diskPaths = {
+        "/mnt",
+        "/mnt/drive1",
+        "/home"
+};
+
+if (readDiskInfo(diskPaths, state.diskOut)) {
+    state.sMetrics.diskPet = state.diskOut.percentUsed;
+}
 
         // HANDLE USER INPUT
         int ch = app.pollInput();  // Gets keyboard input
@@ -95,7 +105,6 @@ int main() {
 
 
 // First - Basic System Monitoring:
-// TODO: Implement calculateCpuPercentage() in proc.cpp (need to store previous CpuTimes)
 // TODO: Implement readDiskStats() in proc.cpp
 // TODO: Implement readUptime() in proc.cpp
 

@@ -4,6 +4,9 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <sys/statvfs.h>
+
+
 
 // Read CPU usage statistics from /proc/stat
 // The first line of /proc/stat contains aggregate CPU times
@@ -31,11 +34,7 @@ bool readCpuStats(CpuTimes& cpuOut) {
        >> cpuOut.system      // System mode time
        >> cpuOut.idle        // Idle time
        >> cpuOut.iowait      // I/O wait time
-       >> cpuOut.irq         // Hardware interrupt time
-       >> cpuOut.softirq     // Software interrupt time
-       >> cpuOut.steal       // Stolen time (VMs)
-       >> cpuOut.guest       // Guest OS time
-       >> cpuOut.guestNice;  // Nice guest OS time
+       >> cpuOut.steal;       // Stolen time (VMs)
 
     return true;  // Successfully read all values
 }
@@ -46,8 +45,6 @@ unsigned long totalJiffies(const CpuTimes& c) {
          + c.system
          + c.idle
          + c.iowait
-         + c.irq
-         + c.softirq
          + c.steal;
 }
 
@@ -101,6 +98,51 @@ int calcMemPercent(const MemInfo& memOut) {
                          (memOut.memTotalKb - memOut.memAvailableKb) / memOut.memTotalKb);
 }
 
+// Disk info function - aggregates information across multiple paths
+bool readDiskInfo(const std::vector<const char*>& paths, DiskInfo& diskOut) {
+    if (paths.empty()) {
+        return false;
+    }
+
+    std::uint64_t totalTotal = 0;
+    std::uint64_t totalAvail = 0;
+    std::uint64_t totalUsed = 0;
+    int successCount = 0;
+
+    for (const char* path : paths) {
+        struct statvfs stat{};
+
+        if (statvfs(path, &stat) != 0) {
+            continue; // Skip this path if statvfs fails
+        }
+
+        const std::uint64_t total =
+            static_cast<std::uint64_t>(stat.f_blocks) * stat.f_frsize;
+
+        const std::uint64_t avail =
+            static_cast<std::uint64_t>(stat.f_bavail) * stat.f_frsize;
+
+        const std::uint64_t used = total - avail;
+
+        totalTotal += total;
+        totalAvail += avail;
+        totalUsed += used;
+        successCount++;
+    }
+
+    if (successCount == 0) {
+        return false; // None of the paths succeeded
+    }
+
+    diskOut.totalBytes = totalTotal;
+    diskOut.availBytes = totalAvail;
+    diskOut.usedBytes = totalUsed;
+
+    diskOut.percentUsed =
+        (totalTotal == 0) ? 0 : static_cast<int>((totalUsed * 100) / totalTotal);
+
+    return true;
+}
 
 
 // TODO: Write function to read disk space using statvfs() system call

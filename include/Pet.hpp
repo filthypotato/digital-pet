@@ -13,8 +13,9 @@ struct PetStats {
     int cleanliness{50};  // How clean the pet is
 };
 
-// add a pet mood struct
 
+
+// struct to hold the pets mood
 struct PetMood {
     std::string happy{};
     std::string bored{};
@@ -29,6 +30,8 @@ struct PetState {
     CpuTimes cpuOut{};
     MemInfo memOut{};
     CpuTimes prevCpu{};
+    PetMood mood{};
+    DiskInfo diskOut{};
 
     bool hasPrevCpu{false};
 
@@ -38,6 +41,8 @@ struct PetState {
     bool isHappy{true};          // Is happiness above threshold?
     bool hasEnergy{true};        // Does pet have energy?
     bool isClean{true};          // Is pet clean enough?
+
+
 };
 
 // Basic pet actions
@@ -45,6 +50,7 @@ void feedPet(PetState& state);
 void playWithPet(PetState& state);
 void sleepPet(PetState& state);
 void cleanPet(PetState& state);
+
 
 
 

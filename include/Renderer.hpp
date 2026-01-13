@@ -28,27 +28,27 @@ public:
 private:
     // Draw the window frame and title
     void drawFrame();
-    
+
     // Draw the pet ASCII art at position (y, x)
     void drawPetVisual(int y, int x);
-    
+
     // Draw the pet's stat bars
     void drawStats(const PetState& state, int y, int x);
-    
+
     // Draw system information (CPU, memory, etc)
     void drawSystemInfo(const PetState& state, int y, int x);
-    
+
     // Draw the available commands
     void drawCommands(int y, int x);
-    
+
     // Draw recent events/messages
     void drawEventLog(int y, int x, int maxLines);
 
     // Helper: draw a progress bar with label and value
     void drawBar(int y, int x, const std::string& label, int value, int width);
-    
+
     // Helper: draw a label and value pair
-    void drawLabelValue(int y, int x, const std::string& label, 
+    void drawLabelValue(int y, int x, const std::string& label,
                        const std::string& value, int width);
 
     // Storage for event messages
