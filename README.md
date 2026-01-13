@@ -104,6 +104,7 @@ What works:
 - Reading CPU times from /proc/stat
 - User input handling
 - Event log system
+- Save / Load system
 
 Planned / TODOs:
 
@@ -113,14 +114,6 @@ Planned / TODOs:
 - Pet death condition and different moods/sprites
 - Colors and improved visuals
 
-## Contributing
-
-Contributions welcome! Good first tasks:
-
-- Implement system metric calculations in proc.cpp
-- Hook metrics into Pet.cpp to modify pet stats
-- Add persistence (save/load)
-- Improve UI and add colors
 
 ## License
 
