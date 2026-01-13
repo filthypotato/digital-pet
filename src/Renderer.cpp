@@ -77,6 +77,8 @@ void Renderer::draw(const PetState& state) {
     mvprintw(23, 2, "Available: %llu kB", state.memOut.memAvailableKb);
     mvprintw(24, 2, "Usage: %d%%", state.sMetrics.memPet);
 
+    // statvfs for disk spaces
+    mvprintw(26, 2, "Disk Space:");
     printBytes(27, 2, "Total", state.diskOut.totalBytes);
     printBytes(28, 2, "Available", state.diskOut.availBytes);
     printBytes(29, 2, "Used", state.diskOut.usedBytes);

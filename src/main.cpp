@@ -49,16 +49,16 @@ int main() {
          state.sMetrics.memPet = calcMemPercent(state.memOut);
         }
 
+        // TODO: Add file paths for ones you want to track specifically
+        const std::vector<const char*> diskPaths = {
+          "/mnt",
+          "/mnt/drive1",
+          "/home"
+        };
 
-const std::vector<const char*> diskPaths = {
-        "/mnt",
-        "/mnt/drive1",
-        "/home"
-};
-
-if (readDiskInfo(diskPaths, state.diskOut)) {
-    state.sMetrics.diskPet = state.diskOut.percentUsed;
-}
+        if (readDiskInfo(diskPaths, state.diskOut)) {
+          state.sMetrics.diskPet = state.diskOut.percentUsed;
+        }
 
         // HANDLE USER INPUT
         int ch = app.pollInput();  // Gets keyboard input
@@ -105,7 +105,6 @@ if (readDiskInfo(diskPaths, state.diskOut)) {
 
 
 // First - Basic System Monitoring:
-// TODO: Implement readDiskStats() in proc.cpp
 // TODO: Implement readUptime() in proc.cpp
 
 // Second - Save/Load System:
