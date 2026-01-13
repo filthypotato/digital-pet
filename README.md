@@ -107,29 +107,11 @@ What works:
 
 Planned / TODOs:
 
-- Calculate CPU / memory / disk usage percentages in proc.cpp
 - Drive pet stat changes from system metrics in Pet.cpp
 - Time-based stat decay and pet actions that modify stats
 - Save / load functionality
 - Pet death condition and different moods/sprites
 - Colors and improved visuals
-
-A recommended function to implement in proc.cpp (example to calculate CPU percentage):
-
-```cpp
-int calculateCpuPercentage(const CpuTimes& prev, const CpuTimes& curr) {
-    unsigned long prevTotal = prev.user + prev.nice + prev.system + 
-                              prev.idle + prev.iowait + prev.irq + 
-                              prev.softirq + prev.steal;
-    unsigned long currTotal = curr.user + curr.nice + curr.system + 
-                              curr.idle + curr.iowait + curr.irq + 
-                              curr.softirq + curr.steal;
-    unsigned long totalDiff = currTotal - prevTotal;
-    unsigned long idleDiff = curr.idle - prev.idle;
-    if (totalDiff == 0) return 0;
-    return 100 * (totalDiff - idleDiff) / totalDiff;
-}
-```
 
 ## Contributing
 
@@ -139,8 +121,6 @@ Contributions welcome! Good first tasks:
 - Hook metrics into Pet.cpp to modify pet stats
 - Add persistence (save/load)
 - Improve UI and add colors
-
-Please open issues or PRs; label any experimental or WIP work clearly.
 
 ## License
 
