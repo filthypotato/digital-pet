@@ -1,128 +1,207 @@
-# System Monitor Pet 🐱💻
+# Digital Pet - System Monitor Tamagotchi
 
-A Tamagotchi-style virtual pet that runs in your terminal. The pet's needs react to your computer's health (CPU, memory, disk) and you can interact using simple keyboard commands. This repository contains a ncurses-based demo with rendering, input handling, and initial system probes.
+A virtual pet game that runs in your terminal, where your pet's health is affected by your computer's system performance!
 
-## Quick status
+## Overview
 
-- Language: C++ (ncurses)
-- Status: Work-in-progress — terminal UI, input handling and basic rendering are implemented; system metric calculations and gameplay rules still need work.
+This is a Tamagotchi-style virtual pet that lives in your terminal. The pet has four main stats:
+- **Hunger** - Feed your pet to keep it satisfied
+- **Happiness** - Play with your pet to keep it happy
+- **Energy** - Let your pet sleep to restore energy
+- **Cleanliness** - Clean your pet to keep it healthy
 
-## Features
+Your pet's stats are also affected by your computer's system metrics:
+- High CPU usage makes the pet tired
+- Low disk space makes the pet dirty
+- High memory usage makes the pet hungry
 
-- Cute ASCII pet rendered in the terminal using ncurses
-- Pet stats: Hunger, Happiness, Energy, Cleanliness
-- Keyboard controls for interacting with the pet
-- Reads system information from /proc (partial implementation)
-- Event log system and simple UI
 
-## Repository layout
+## Building the Project
 
-- main.cpp - Main game loop and entry point
-- ncurses_app.hpp / ncurses_app.cpp - ncurses wrapper and UI utilities
-- proc.hpp / proc.cpp - Read system information from /proc filesystem (implement metric calculations here)
-- Pet.hpp / Pet.cpp - Pet state and behavior logic
-- Renderer.hpp / Renderer.cpp - Drawing and rendering logic
+### Prerequisites
 
-## Prerequisites
+You need the ncurses library installed:
 
-You need the ncurses development libraries installed.
-
-On Ubuntu/Debian:
-
-```bash
-sudo apt-get install libncurses5-dev libncursesw5-dev
-```
-
-On Fedora:
-
-```bash
-sudo dnf install ncurses-devel
-```
-
-On Arch Linux:
-
+**Arch Linux:**
 ```bash
 sudo pacman -S ncurses
+# Or use the Makefile:
+make install-deps-arch
 ```
 
-On macOS (Homebrew):
+**Ubuntu/Debian:**
+```bash
+sudo apt-get install libncurses5-dev
+# Or use the Makefile:
+make install-deps-debian
+```
 
+**Auto-detect (recommended):**
+```bash
+make install-deps
+```
+
+**macOS:**
 ```bash
 brew install ncurses
 ```
 
-## Build
-
-A simple g++ command (adjust filenames if you add/remove source files):
+### Compile
 
 ```bash
-g++ -std=c++17 main.cpp ncurses_app.cpp proc.cpp Pet.cpp Renderer.cpp -lncurses -o pet
+make
 ```
 
-If your project already uses a build system (CMake/Make), prefer that. Here's a tiny Makefile snippet you can drop in as a starting point:
-
-```makefile
-CXX = g++
-CXXFLAGS = -std=c++17 -O2
-LDLIBS = -lncurses
-SRCS = main.cpp ncurses_app.cpp proc.cpp Pet.cpp Renderer.cpp
-OBJS = $(SRCS:.cpp=.o)
-
-pet: $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $@ $(OBJS) $(LDLIBS)
-
-clean:
-	rm -f pet $(OBJS)
+Or manually:
+```bash
+g++ -std=c++17 -Wall -Wextra *.cpp -o digital-pet -lncurses
 ```
 
-## Run
-
-Start the pet in your terminal:
+### Run
 
 ```bash
-./pet
+make run
+# or
+./digital-pet
 ```
-
-If your terminal becomes unresponsive after an abnormal exit, run `reset` to restore state.
 
 ## Controls
 
-- F — Feed your pet
-- P — Play with your pet
-- S — Put the pet to sleep
-- C — Clean your pet
-- Q — Quit the application
+- **F** - Feed your pet
+- **P** - Play with your pet
+- **S** - Put your pet to sleep
+- **C** - Clean your pet
+- **L** - Load saved game
+- **Q** - Save and quit
 
-Controls are case-insensitive.
+## Key Improvements Made
 
-## Current implementation notes
+### 1. Proper Game Class
+The game logic is now encapsulated in a `Game` class instead of being in `main()`. This makes the code more organized and easier to maintain.
 
-What works:
+**Before:**
+```cpp
+// Everything in main()
+int main() {
+    NcursesApp app;
+    Renderer renderer;
+    PetState state;
+    // Game loop...
+}
+```
 
-- Terminal UI with ncurses
-- Basic rendering (pet sprite, stat bars, commands)
-- Reading CPU times from /proc/stat
-- User input handling
-- Event log system
-- Save / Load system
+**After:**
+```cpp
+// Clean separation
+class Game {
+    void init();
+    void run();
+    void update();
+    void handleInput();
+    void render();
+};
 
-Planned / TODOs:
+int main() {
+    Game game;
+    game.init();
+    game.run();
+}
+```
 
-- Drive pet stat changes from system metrics in Pet.cpp
-- Time-based stat decay and pet actions that modify stats
-- Save / load functionality
-- Pet death condition and different moods/sprites
-- Colors and improved visuals
+### 2. Better Frame Timing
+Added proper frame timing to ensure consistent FPS regardless of system load.
+
+### 3. Cleaner Main Function
+`main.cpp` is now much simpler and focuses only on program initialization and error handling.
+
+### 4. Build System
+Added a Makefile for easy compilation and project management.
+
+## TODO: Next Steps
+
+### Priority 1 - Core Gameplay
+- [ ] Implement `updatePetFromSystem()` to link system stats to pet needs
+- [ ] Implement `decayStats()` for time-based stat degradation
+- [ ] Implement `updateStatusFlags()` for boolean status flags
+- [ ] Add pet death mechanics
+
+### Priority 2 - Save/Load
+- [ ] Track time elapsed since last save
+- [ ] Apply decay based on time away
+- [ ] Warn if pet died while user was gone
+
+### Priority 3 - Visuals
+- [ ] Different pet sprites for different moods
+- [ ] Color-coded stat bars (green/yellow/red)
+- [ ] Animations or blinking effects
+- [ ] Better layout and spacing
+
+### Priority 4 - System Info
+- [ ] Dedicated panel for system metrics
+- [ ] Visual health indicators
+- [ ] Readable uptime format
+
+### Priority 5 - Polish
+- [ ] Pet naming
+- [ ] Age counter
+- [ ] Achievements system
+- [ ] Handle terminal resizing
+- [ ] More commands
+
+## Architecture Notes
+
+### Game Loop Flow
+```
+main()
+  -> Game::init()
+    -> Initialize ncurses
+    -> Initialize renderer
+    -> Load save file
+  -> Game::run()
+    -> while(running):
+      -> update() - Update game state
+      -> handleInput() - Process keyboard
+      -> render() - Draw everything
+      -> Frame timing
+  -> Game::shutdown()
+```
+
+### Data Flow
+```
+/proc filesystem
+    ↓
+readHardwareStats()
+    ↓
+PetState (system metrics)
+    ↓
+updatePetFromSystem() [TODO]
+    ↓
+PetState (pet stats)
+    ↓
+Renderer::draw()
+    ↓
+Terminal display
+```
+
+## Debugging
+
+The renderer currently shows debug information:
+- CPU usage and raw CPU times
+- Memory stats (total/available)
+- Disk space usage
+- System uptime
+
+This debug info will be cleaned up once the system-to-pet mechanics are implemented.
+
+## Known Issues
+
+1. Terminal resizing not handled gracefully
+2. No time-based stat decay yet
+3. System metrics don't affect pet yet
+4. Pet can't die yet
+5. Save/load doesn't track time away
 
 
 ## License
 
-If you have a preferred license, add it to a LICENSE file. If you want, I can add an MIT license template for you.
-
-## Contact
-
-Maintainer: filthypotato
-
----
-
-Notes: I updated the README to add build instructions, a small Makefile, clearer TODOs, and contribution guidance while keeping the project marked as WIP.
+This is a learning project. Feel free to use and modify as you wish!

@@ -15,6 +15,11 @@ savegame.dat
 *.dll
 *.exe
 
+
+# Files of my choice
+CHANGES.md
+PROJECT_GUIDE.md
+
 # =========================
 # CMake
 # =========================
