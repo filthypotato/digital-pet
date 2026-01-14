@@ -12,8 +12,8 @@
 #include <chrono>
 #include <thread>
 #include <iostream>
-// MAIN GAME LOOP
 
+// Main game loop
 int main() {
     // ncurses for terminal UI
     NcursesApp app{};
@@ -70,8 +70,6 @@ int main() {
 }
 
 
-// First - Basic System Monitoring:
-// TODO: Implement readUptime() in proc.cpp
 
 // Second - Save/Load System:
 // TODO: Calculate time elapsed since last save

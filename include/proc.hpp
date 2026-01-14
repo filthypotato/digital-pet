@@ -4,7 +4,6 @@
 #include <cstdint>
 #include <string> // for pet.hpp
 #include <vector>
-#include "proc.hpp"
 // Holds raw CPU time values from /proc/stat
 // All values are in "jiffies" (ticks of the system clock)
 struct CpuTimes {
@@ -47,10 +46,10 @@ bool readCpuStats(CpuTimes& cpuOut);
 bool readMemStats(MemInfo& memOut);
 bool readUptime(UptimeInfo& uptimeOut);
 bool readDiskInfo(const std::vector<const char*>& paths, DiskInfo& diskOut);
+bool readUptime(UptimeInfo& uptimeOut);
 int calcCpuPercent(const CpuTimes& prev, const CpuTimes& cur);
 int calcMemPercent(const MemInfo& memOut);
 int calcDiskPercent(const DiskInfo& diskOut);
 unsigned long totalJiffies(const CpuTimes& c);
 struct PetState;
 void readHardwareStats(PetState& state);
-// TODO: Implement readUptime() to read from /proc/uptime

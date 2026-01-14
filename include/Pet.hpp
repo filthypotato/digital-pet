@@ -7,10 +7,10 @@
 // The pet's needs (like a real Tamagotchi)
 // Values range from 0-100 (100 is best)
 struct PetStats {
-    int hunger{50};       // How hungry the pet is (lower = more hungry)
-    int happiness{50};    // How happy the pet is
-    int energy{50};       // How much energy the pet has
-    int cleanliness{50};  // How clean the pet is
+    int hunger{25};       // How hungry the pet is (lower = more hungry)
+    int happiness{26};    // How happy the pet is
+    int energy{23};       // How much energy the pet has
+    int cleanliness{12};  // How clean the pet is
 };
 
 
@@ -21,6 +21,7 @@ struct PetMood {
     std::string bored{};
     std::string angry{};
     std::string lazy{};
+    std::string dity{};
 };
 
 // Complete state of the pet
@@ -32,6 +33,7 @@ struct PetState {
     CpuTimes prevCpu{};
     PetMood mood{};
     DiskInfo diskOut{};
+    UptimeInfo uptimeOut{};
 
     bool hasPrevCpu{false};
 

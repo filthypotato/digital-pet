@@ -26,6 +26,18 @@ static const char* CAT_ART = R"(
  > ^ <
 )";
 
+static const char* SAD_CAT = R"(
+ /\_/\
+( T.T )
+ > ^
+)";
+
+static const char* ANGRY_CAT = R"(
+ /\_/\
+( >.< )
+ > ^
+)";
+
 // Initialize the renderer - get screen size
 void Renderer::init() {
     getmaxyx(stdscr, m_height, m_width);
@@ -59,7 +71,7 @@ void Renderer::draw(const PetState& state) {
 
     // Draw all the UI elements at their positions
     // You can adjust these coordinates to rearrange the layout
-    drawPetVisual(2, 2);                      // Pet in top-left
+    drawPetVisual(2, 2, state);                      // Pet in top-left
     drawStats(state, 2, 25);                  // Stats next to pet
     drawCommands(m_height - 6, 2);            // Commands at bottom-left
     drawEventLog(m_height - 25, 35, 4);        // Log at bottom-right
@@ -83,7 +95,9 @@ void Renderer::draw(const PetState& state) {
     printBytes(28, 2, "Available", state.diskOut.availBytes);
     printBytes(29, 2, "Used", state.diskOut.usedBytes);
 
-
+    // /proc/uptime
+    mvprintw(31, 2, "Uptime Info:");
+    mvprintw(32, 2, "System Uptime: %.1f s", state.uptimeOut.uptimeSeconds);
 
     // Display everything (ncurses requires this)
     refresh();
@@ -95,8 +109,19 @@ void Renderer::drawFrame() {
     mvprintw(0, 2, " digital-pet ");          // Creates the title in top left border
 }
 
-// Draw the pet's ASCII art
-void Renderer::drawPetVisual(int y, int x) {
+// Here we draw the pet
+void Renderer::drawPetVisual(int y, int x, const PetState& state) {
+
+    int colorPair{1};    // Default green for happy
+
+    if (state.pStats.happiness < 30) {
+      colorPair = 3; // Blue - sad.. :(
+    } else if (state.pStats.energy < 30) {
+      colorPair = 2;  // Red - tired or angry
+    }
+
+    attron(COLOR_PAIR(colorPair));
+
     // Print the multi-line ASCII art line by line
     int line{};
     const char* p = CAT_ART;
@@ -105,7 +130,7 @@ void Renderer::drawPetVisual(int y, int x) {
     // Go through each character in the art
     while (*p) {
         if (*p == '\n') {
-            // Found a newline - print the current line
+            // finds newline / print the current line
             mvprintw(y + line, x, "%s", current.c_str());
             current.clear();
             line++;
@@ -116,17 +141,20 @@ void Renderer::drawPetVisual(int y, int x) {
         ++p;
     }
 
-    // Print the last line if there is one
+    // Prints the last line if there is one
     if (!current.empty()) {
         mvprintw(y + line, x, "%s", current.c_str());
     }
+
+    // Turns off color
+    attroff(COLOR_PAIR(colorPair));
 }
 
 // Draw all the pet's stat bars
 void Renderer::drawStats(const PetState& state, int y, int x) {
-    mvprintw(y, x, "Stats");
 
-    // Draw a bar for each stat (values are 0-100)
+    mvprintw(y, x, "Stats");
+    // Draws a bar for each stat
     drawBar(y + 2, x, "Hunger",      state.pStats.hunger,      20);
     drawBar(y + 3, x, "Happiness",   state.pStats.happiness,   20);
     drawBar(y + 4, x, "Energy",      state.pStats.energy,      20);
@@ -138,7 +166,7 @@ void Renderer::drawStats(const PetState& state, int y, int x) {
 
 }
 
-// Draw the available commands
+// Draw the available commands to interact with pet
 void Renderer::drawCommands(int y, int x) {
     mvprintw(y, x, "Commands");
     mvprintw(y + 1, x, "[F]eed  [P]lay  [S]leep  [C]lean  [Q]uit");
@@ -146,11 +174,11 @@ void Renderer::drawCommands(int y, int x) {
 
 }
 
-// Draw the event log (recent messages)
+// Event log that keeps log messages on events happening
 void Renderer::drawEventLog(int y, int x, int maxLines) {
     mvprintw(y, x, "Log");
 
-    // Calculate which messages to show (most recent ones)
+    // decide which messages to show
     int start = std::max(0, (int)m_events.size() - maxLines);
     int line{1};
 

@@ -3,6 +3,7 @@
 */
 
 #include "ncurses_app.hpp"
+#include "Renderer.hpp"
 
 // Constructor - start with app running
 NcursesApp::NcursesApp()
@@ -22,23 +23,31 @@ void NcursesApp::init() {
     curs_set(0);            // Hide the cursor
     nodelay(stdscr, TRUE);  // Make getch() truly non-blocking
     timeout(0);             // Don't wait at all for input
-    
-    // CRITICAL: Enable double buffering to prevent flicker
+
+    // Enables double buffering to prevent flicker
     intrflush(stdscr, FALSE);
     scrollok(stdscr, FALSE);
-    
+
     // Set up colors if the terminal supports them
     if (has_colors()) {
         start_color();
         use_default_colors();
 
+        // In your init, after start_color():
+        init_pair(1, COLOR_GREEN, COLOR_BLACK);  // Happy = green
+        init_pair(2, COLOR_RED, COLOR_BLACK);    // Angry = red
+        init_pair(3, COLOR_BLUE, COLOR_BLACK);   // Sad = blue
+
+        // When drawing:
+        attron(COLOR_PAIR(1));  // Turn on green
+        attroff(COLOR_PAIR(1)); // Turn off green
         // TODO: Define color pairs when you want colors
         // Example: init_pair(1, COLOR_RED, COLOR_BLACK);
         //          init_pair(2, COLOR_GREEN, COLOR_BLACK);
     }
 }
 
-// Clean up ncurses before exiting
+// Cleans up ncurses before exiting
 void NcursesApp::shutdown() {
     // Only call endwin() if ncurses is still active
     if (isendwin() == FALSE) {
@@ -51,9 +60,9 @@ void NcursesApp::beginFrame() {
     // Empty - we draw over old content to prevent flicker
 }
 
-// End the frame by showing everything we drew
+// End the frame by showing everything drawn
 void NcursesApp::endFrame() {
-    refresh();  // Actually display what we drew
+    refresh();  // Display what is drawn
 }
 
 // Check if user pressed a key (non-blocking)
@@ -70,7 +79,7 @@ void NcursesApp::drawBorder() {
 void NcursesApp::drawCenteredText(int y, const std::string& text) {
     int rows, cols;
     getmaxyx(stdscr, rows, cols);  // Get screen size
-    (void)rows;  // We don't need rows, just silence the warning
+    (void)rows;  // Dont need rows. void to silice error
 
     // Calculate x position to center the text
     int x = (cols - static_cast<int>(text.size())) / 2;
@@ -84,7 +93,7 @@ bool NcursesApp::running() const {
     return m_running;
 }
 
-// Tell the app to stop running (exits main loop)
+// Tell the app to stop running which exits the main loop
 void NcursesApp::stop() {
     m_running = false;
 }

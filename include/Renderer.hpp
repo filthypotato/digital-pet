@@ -32,7 +32,7 @@ private:
     void drawFrame();
 
     // Draw the pet ASCII art at position (y, x)
-    void drawPetVisual(int y, int x);
+    void drawPetVisual(int y, int x, const PetState& state);
 
     // Draw the pet's stat bars
     void drawStats(const PetState& state, int y, int x);

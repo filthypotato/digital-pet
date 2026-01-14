@@ -8,7 +8,6 @@
 #include <sys/statvfs.h>
 
 
-
 // Read CPU usage statistics from /proc/stat
 // The first line of /proc/stat contains aggregate CPU times
 bool readCpuStats(CpuTimes& cpuOut) {
@@ -99,16 +98,16 @@ int calcMemPercent(const MemInfo& memOut) {
                          (memOut.memTotalKb - memOut.memAvailableKb) / memOut.memTotalKb);
 }
 
-// Disk info function - aggregates information across multiple paths
+// Disk function
 bool readDiskInfo(const std::vector<const char*>& paths, DiskInfo& diskOut) {
     if (paths.empty()) {
         return false;
     }
 
-    std::uint64_t totalTotal = 0;
-    std::uint64_t totalAvail = 0;
-    std::uint64_t totalUsed = 0;
-    int successCount = 0;
+    std::uint64_t totalTotal{};
+    std::uint64_t totalAvail{};
+    std::uint64_t totalUsed{};
+    int successCount{};
 
     for (const char* path : paths) {
         struct statvfs stat{};
@@ -171,11 +170,31 @@ void readHardwareStats(PetState& state) {
 
     if (readDiskInfo(diskPaths, state.diskOut)) {
       state.sMetrics.diskPet = state.diskOut.percentUsed;
+
+    if (readUptime(state.uptimeOut)) {
+      state.sMetrics.uptimePet = static_cast<int>(state.uptimeOut.uptimeSeconds);
+    }
   }
 }
 
 
+bool readUptime(UptimeInfo& uptimeOut) {
+  std::ifstream uptimeFile("/proc/uptime");
+    if (!uptimeFile.is_open())
+      return false;
 
-// TODO: Write function to read uptime from /proc/uptime
-//       First number is total uptime in seconds
-//       Parse it and store in UptimeInfo struct
+    double uptimeSec{};
+    double idleSec{}; // adding this just in case i want to do something
+                      // with idle times later
+    // /proc/uptime  <totalUptime>  <idle time>
+    if (!(uptimeFile >> uptimeSec >> idleSec))
+      return false;
+
+    uptimeOut.uptimeSeconds = uptimeSec;
+
+
+  return true;
+
+}
+
+
