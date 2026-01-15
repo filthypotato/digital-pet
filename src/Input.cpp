@@ -40,6 +40,9 @@ switch (std::tolower(static_cast<unsigned char>(ch))) {
         state = loadGame();
         renderer.pushEvent("PetState Loaded! ^_^");
         break;
+    case 'd':
+        state.showDebug = !state.showDebug;
+        break;
 }
 
 }

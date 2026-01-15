@@ -36,6 +36,7 @@ struct PetState {
     UptimeInfo uptimeOut{};
 
     bool hasPrevCpu{false};
+    bool showDebug{false};
 
     // Status flags (calculated from stats)
     bool isAlive{true};          // Is the pet still alive?

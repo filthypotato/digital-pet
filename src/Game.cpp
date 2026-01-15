@@ -16,8 +16,6 @@ void Game::init() {
 
     app.init();
     renderer.init();
-
-    // Load saved game state
     state = loadGame();
 
     // If no save file or pet is dead, create new pet
@@ -44,22 +42,13 @@ void Game::run() {
         float dtSeconds = std::chrono::duration<float>(frameStart - lastFrame).count();
         lastFrame = frameStart;
 
-        // Clears the screen for a new frame
         app.beginFrame();
-
-        // Updates game state
         update(dtSeconds);
-
-        // user input
         handleInput();
-
-        // Renders everything
         render();
-
-        // Display current frame
         app.endFrame();
 
-        // Frame rate limiting
+        // frame limiting
         auto frameEnd = std::chrono::steady_clock::now();
         auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
             frameEnd - frameStart).count();
@@ -76,8 +65,6 @@ void Game::update(float dtSeconds) {
     readHardwareStats(state);
     updatePetFromSystem(state, dtSeconds);
 
-    // TODO: Update pet stats based on system metrics
-    // TODO: Apply time-based decay to stats
     // TODO: Update status flags (isHungry, isHappy, etc)
     // TODO: Check if pet is still alive
 }
