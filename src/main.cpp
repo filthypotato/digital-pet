@@ -15,13 +15,13 @@ int main() {
         // main game loop
         game.run();
 
-        // Cleanup
+        // shuts down game and cleans up memory
         game.shutdown();
 
-        // Clear screen to avoid UI sticking
+        // Clear screen to avoid UI sticking like before
         std::cout << "\033[2J\033[H" << std::flush;
 
-    } catch (const std::exception& e) {
+    } catch (const std::exception& e) { // handles error exeception
         std::cerr << "Error: " << e.what() << std::endl;
         return 1;
     }

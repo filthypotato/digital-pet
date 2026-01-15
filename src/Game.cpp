@@ -1,6 +1,7 @@
 #include "Game.hpp"
 #include "Input.hpp"
 #include "Load_Save.hpp"
+#include "Pet.hpp"
 #include "proc.hpp"
 #include <chrono>
 #include <thread>
@@ -28,18 +29,26 @@ void Game::init() {
     }
 }
 
+
+
 void Game::run() {
+      using clock = std::chrono::steady_clock;
+
+      auto lastFrame = clock::now();
 
     //game loop
     while (app.running()) {
         // Start frame timing
-        auto frameStart = std::chrono::steady_clock::now();
+        auto frameStart = clock::now();
 
-        // Clear screen for new frame
+        float dtSeconds = std::chrono::duration<float>(frameStart - lastFrame).count();
+        lastFrame = frameStart;
+
+        // Clears the screen for a new frame
         app.beginFrame();
 
         // Updates game state
-        update();
+        update(dtSeconds);
 
         // user input
         handleInput();
@@ -62,9 +71,10 @@ void Game::run() {
     }
 }
 
-void Game::update() {
+void Game::update(float dtSeconds) {
     // Read hardware stats (CPU, Memory, Disk, Uptime)
     readHardwareStats(state);
+    updatePetFromSystem(state, dtSeconds);
 
     // TODO: Update pet stats based on system metrics
     // TODO: Apply time-based decay to stats

@@ -21,7 +21,7 @@ struct PetMood {
     std::string bored{};
     std::string angry{};
     std::string lazy{};
-    std::string dity{};
+    std::string dirty{};
 };
 
 // Complete state of the pet
@@ -47,11 +47,14 @@ struct PetState {
 
 };
 
-// Basic pet actions
+// Fwd declarations for pet actions
 void feedPet(PetState& state);
 void playWithPet(PetState& state);
 void sleepPet(PetState& state);
 void cleanPet(PetState& state);
+
+// fwd declaration for linking system health to pet needs
+void updatePetFromSystem(PetState& state, float dtSeconds);
 
 
 

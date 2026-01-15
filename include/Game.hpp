@@ -20,7 +20,7 @@ public:
 
 private:
     // Updates game logic during main loop
-    void update();
+    void update(float dtSeconds);
 
     // user input
     void handleInput();
