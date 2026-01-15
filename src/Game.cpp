@@ -64,9 +64,7 @@ void Game::update(float dtSeconds) {
     // Read hardware stats (CPU, Memory, Disk, Uptime)
     readHardwareStats(state);
     updatePetFromSystem(state, dtSeconds);
-
-    // TODO: Update status flags (isHungry, isHappy, etc)
-    // TODO: Check if pet is still alive
+    updateStatusFlags(state);
 }
 
 void Game::handleInput() {

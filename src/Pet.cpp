@@ -35,7 +35,7 @@ void cleanPet(PetState& state) {
 
 const float cpuUsageToAffectEngery{30};
 const float diskUsageToAffectCleanliness{10};
-const float memUsageToAffectCleanliness{30};
+const float memUsageToAffectCleanliness{25};
 constexpr float ENERY_DECAY{1.5f};  // loses 1 tick of energy every 1.5 seconds
 constexpr float HUNGER_DECAY{2.0f}; // loses 1 tick of hunger every 2 seconds
 constexpr float CLEAN_DECAY{3.0f};  // loses 1 tick of cleanliness every 3 seconds
@@ -74,5 +74,38 @@ void updatePetFromSystem(PetState& state, float dtSeconds) {
     }
 
     clamp(state.pStats);
+}
+
+
+void updateStatusFlags(PetState& state) {
+    constexpr int HUNGER_LOW{30};
+    constexpr int HAPPY_LOW{35};
+    constexpr int ENERGY_LOW{25};
+    constexpr int CLEAN_LOW{15};
+
+    state.isHungry = (state.pStats.hunger <= HUNGER_LOW);
+
+    state.isHappy   = (state.pStats.happiness >= HAPPY_LOW);
+    state.hasEnergy = (state.pStats.energy >= ENERGY_LOW);
+    state.isClean   = (state.pStats.cleanliness >= CLEAN_LOW);
+
+    int critical = 0;
+    if (state.pStats.hunger <= 0)      critical++;
+    if (state.pStats.energy <= 0)      critical++;
+    if (state.pStats.cleanliness <= 0) critical++;
+    if (state.pStats.happiness <= 0)   critical++;
+
+    state.isAlive = (critical < 2);
+}
+
+const char* getPetStatusMsg(const PetState& state) {
+    if (!state.isAlive)    return "i am deceased boss! D: ";
+
+    if (!state.isClean)    return "Not feeling so good boss... BATH MEEE!";
+    if (!state.hasEnergy)  return "Gimme some Zzzzz's boss";
+    if (state.isHungry)    return "SUSTANANCE PLZZZZ";
+    if (!state.isHappy)    return "I could use a friend...";
+
+    return "Doing better than most bots :)";
 }
 

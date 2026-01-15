@@ -31,11 +31,6 @@ int main() {
 
 /* TODO List for Future Development:
 
-Core Gameplay:
-- Implement updatePetFromSystem() to link system health to pet needs
-  - High CPU usage -> pet loses energy
-  - Low disk space -> pet loses cleanliness
-  - High memory usage -> pet loses hunger
 
 - Implement decayStats() for time-based stat reduction
   - All stats slowly decrease over time

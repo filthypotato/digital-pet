@@ -152,6 +152,8 @@ void Renderer::drawStats(const PetState& state, int y, int x) {
     drawBar(y + 4, x, "Energy",      state.pStats.energy,      20);
     drawBar(y + 5, x, "Cleanliness", state.pStats.cleanliness, 20);
 
+    mvprintw(y + 6, x, "Status: %s", getPetStatusMsg(state));
+
     // Shows if the pet is alive
     mvprintw(y + 7, x, "Alive: %s", state.isAlive ? "For Now :|" : "no ;o");
 

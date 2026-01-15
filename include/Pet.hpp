@@ -57,8 +57,8 @@ void cleanPet(PetState& state);
 // fwd declaration for linking system health to pet needs
 void updatePetFromSystem(PetState& state, float dtSeconds);
 
-
-
+void updateStatusFlags(PetState& state);
+const char* getPetStatusMsg(const PetState& state);
 
 
 // TODO: Add function to update pet stats based on system metrics
