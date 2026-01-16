@@ -35,30 +35,37 @@ void cleanPet(PetState& state) {
 
 const float cpuUsageToAffectEngery{5}; // change to which % you want stats to start decaying
 const float diskUsageToAffectCleanliness{10}; // change % here
-const float memUsageToAffectCleanliness{27};  // change % here
+const float memUsageToAffectHunger{27};  // change % here
+const float uptimeToAffectHappiness{300}; // change seconds here
 constexpr float ENERY_DECAY{3.0f};  // loses 1 tick of energy every 3 seconds
 constexpr float HUNGER_DECAY{4.0f}; // loses 1 tick of hunger every 4 seconds
 constexpr float CLEAN_DECAY{3.0f};  // loses 1 tick of cleanliness every 3 seconds
-                                    //
+constexpr float HAPPY_DECAY{3.0f};
+
 // function to link system health to pet needs
 void updatePetFromSystem(PetState& state, float dtSeconds) {
     static float energyDebt{};
     static float cleanDebt{};
     static float hungerDebt{};
+    static float happyDebt{};
 
     // subtract whole numbers from pets stats at the correct speed with fractional decay
     if (state.sMetrics.cpuPet > cpuUsageToAffectEngery)
         energyDebt += (1.0f / ENERY_DECAY) * dtSeconds; // divide 1.0f by decay * dtSeconds
                                           // no decay unless thresholds are bad
-    if (state.sMetrics.diskPet < diskUsageToAffectCleanliness)
+    if (state.sMetrics.diskPet > diskUsageToAffectCleanliness)
         cleanDebt += (1.0f / CLEAN_DECAY) * dtSeconds; // divide 1.0f by decay * dtSeconds
 
-    if (state.sMetrics.memPet > memUsageToAffectCleanliness)
+    if (state.sMetrics.memPet > memUsageToAffectHunger)
         hungerDebt += (1.0f / HUNGER_DECAY) * dtSeconds; // divide 1.0f by decay * dtSeconds
+
+    if (state.sMetrics.uptimePet > uptimeToAffectHappiness)
+        happyDebt += (1.0f / HAPPY_DECAY) * dtSeconds;
 
     int e = static_cast<int>(energyDebt);
     int c = static_cast<int>(cleanDebt);
     int h = static_cast<int>(hungerDebt);
+    int ha = static_cast <int>(happyDebt);
 
     if (e > 0) {
       state.pStats.energy -= e;
@@ -72,11 +79,15 @@ void updatePetFromSystem(PetState& state, float dtSeconds) {
       state.pStats.hunger -= h;
       hungerDebt -= h;
     }
+    if (ha > 0) {
+        state.pStats.happiness -= ha;
+        happyDebt -= ha;
+    }
 
-
+    // Clamp stats after decay to ensure they stay in valid range
     clamp(state.pStats);
-}
 
+}
 
 void updateStatusFlags(PetState& state) {
     constexpr int HUNGER_LOW{30};
@@ -84,29 +95,39 @@ void updateStatusFlags(PetState& state) {
     constexpr int ENERGY_LOW{25};
     constexpr int CLEAN_LOW{15};
 
+    clamp(state.pStats);
+
+    // how many critcal stats are at 0?
+    int critical =
+        (state.pStats.hunger == 0) +
+        (state.pStats.energy == 0) +
+        (state.pStats.happiness == 0) +
+        (state.pStats.cleanliness == 0);
+
+    // Pet dies when 2 stats hit 0
+    state.isAlive  = (critical < 2);
+
+    // Update other status flags
     state.isHungry = (state.pStats.hunger <= HUNGER_LOW);
-
-    state.isHappy   = (state.pStats.happiness >= HAPPY_LOW);
-    state.hasEnergy = (state.pStats.energy >= ENERGY_LOW);
-    state.isClean   = (state.pStats.cleanliness >= CLEAN_LOW);
-
-    int critical{};
-    if (state.pStats.hunger <= 0)      critical++;
-    if (state.pStats.energy <= 0)      critical++;
-    if (state.pStats.cleanliness <= 0) critical++;
-    if (state.pStats.happiness <= 0)   critical++;
-
-    state.isAlive = (critical < 2); // pet dies when 2 or more stats reach 0
+    state.isHappy  = (state.pStats.happiness >= HAPPY_LOW);
+    state.hasEnergy= (state.pStats.energy >= ENERGY_LOW);
+    state.isClean  = (state.pStats.cleanliness >= CLEAN_LOW);
 }
+
 
 const char* getPetStatusMsg(const PetState& state) {
-    if (!state.isAlive)    return "i am deceased boss! D: ";
+    if (!state.isAlive)
+        return "i am deceased boss! D: ";
+    if (!state.isClean)
+        return "Not feeling so good boss... BATH MEEE!";
+    if (!state.hasEnergy)
+        return "Gimme some Zzzzz's boss";
+    if (state.isHungry)
+        return "SUSTANANCE PLZZZZ";
+    if (!state.isHappy)
+        return "I could use a friend...";
 
-    if (!state.isClean)    return "Not feeling so good boss... BATH MEEE!";
-    if (!state.hasEnergy)  return "Gimme some Zzzzz's boss";
-    if (state.isHungry)    return "SUSTANANCE PLZZZZ";
-    if (!state.isHappy)    return "I could use a friend...";
-
-    return "Doing better than most potties :)"; // (pet bot) lol
+    return "Doing better than most potties :)(petbot lol)"; // (pet bot) lol
 }
+
 

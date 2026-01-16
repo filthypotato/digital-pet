@@ -17,21 +17,37 @@ switch (std::tolower(static_cast<unsigned char>(ch))) {
         return;
 
     case 'f':
+        if (!state.isAlive) {
+            renderer.pushEvent("Your pet is dead. Cannot feed.");
+            break;
+        }
         feedPet(state);
         renderer.pushEvent("You fed your pet!");
         break;
 
     case 'p':
+        if (!state.isAlive) {
+            renderer.pushEvent("Your pet is dead. Cannot play.");
+            break;
+        }
         playWithPet(state);
         renderer.pushEvent("You played with your pet!");
         break;
 
     case 's':
+        if (!state.isAlive) {
+            renderer.pushEvent("Your pet is dead. Cannot sleep.");
+            break;
+        }
         sleepPet(state);
         renderer.pushEvent("Your pet is sleeping...");
         break;
 
     case 'c':
+        if (!state.isAlive) {
+            renderer.pushEvent("Your pet is dead. Cannot clean.");
+            break;
+        }
         cleanPet(state);
         renderer.pushEvent("You cleaned your pet!");
         break;

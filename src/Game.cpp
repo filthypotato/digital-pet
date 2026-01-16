@@ -20,6 +20,11 @@ void Game::init() {
 
     // If no save file or pet is dead, create new pet
     if (!state.isAlive) {
+        // Reset all stats for new pet
+        state.pStats.hunger = 50;
+        state.pStats.happiness = 50;
+        state.pStats.energy = 50;
+        state.pStats.cleanliness = 50;
         state.isAlive = true;
         renderer.pushEvent("New pet created! Take good care of it!");
     } else {
@@ -64,7 +69,15 @@ void Game::update(float dtSeconds) {
     // Read hardware stats (CPU, Memory, Disk, Uptime)
     readHardwareStats(state);
     updatePetFromSystem(state, dtSeconds);
+    
+    // Store alive state before updating
+    bool wasAlive = state.isAlive;
     updateStatusFlags(state);
+    
+    // Check if pet just died this frame
+    if (wasAlive && !state.isAlive) {
+        renderer.pushEvent("YOUR PET HAS DIED! Press 'L' to load or 'Q' to quit.");
+    }
 }
 
 void Game::handleInput() {

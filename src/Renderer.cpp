@@ -42,7 +42,7 @@ static const char* ANGRY_CAT = R"(
 
 static const char* HUNGRY_CAT = R"(
  /\_/\
-( o.o )
+( 0.- )
  > ~ <
 )";
 
@@ -128,9 +128,11 @@ void Renderer::drawPetVisual(int y, int x, const PetState& state) {
     int colorPair{1};    // Default green for happy
     const char* art = CAT_ART;
 
-
-
-    if (state.pStats.happiness < 30) {
+    // Check death FIRST - most important state!
+    if (!state.isAlive) {
+        colorPair = 2; // red for dead
+        art = DEAD_CAT;
+    } else if (state.pStats.happiness < 30) {
         colorPair = 3; // Blue - sad.. :(
         art = SAD_CAT;
     } else if (state.pStats.energy < 40) {
@@ -140,9 +142,11 @@ void Renderer::drawPetVisual(int y, int x, const PetState& state) {
         colorPair = 4; // Yellow - hungry
         art = HUNGRY_CAT;
     } else if (state.pStats.energy < 20) {
-        colorPair = 1;
+        colorPair = 5; // Cyan for sleepy
         art = SLEEPY_CAT;
     }
+
+
 
     attron(COLOR_PAIR(colorPair));
 
@@ -169,10 +173,7 @@ void Renderer::drawPetVisual(int y, int x, const PetState& state) {
         mvprintw(y + line, x, "%s", current.c_str());
     }
 
-    if (!state.isAlive) {
-        colorPair = 2; // red for dead
-        art = DEAD_CAT;
-    }
+
 
     // Turns off color
     attroff(COLOR_PAIR(colorPair));
