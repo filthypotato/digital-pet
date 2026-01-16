@@ -74,55 +74,9 @@ make run
 - **L** - Load saved game
 - **Q** - Save and quit
 
-## Key Improvements Made
-
-### 1. Proper Game Class
-The game logic is now encapsulated in a `Game` class instead of being in `main()`. This makes the code more organized and easier to maintain.
-
-**Before:**
-```cpp
-// Everything in main()
-int main() {
-    NcursesApp app;
-    Renderer renderer;
-    PetState state;
-    // Game loop...
-}
-```
-
-**After:**
-```cpp
-// Clean separation
-class Game {
-    void init();
-    void run();
-    void update();
-    void handleInput();
-    void render();
-};
-
-int main() {
-    Game game;
-    game.init();
-    game.run();
-}
-```
-
-### 2. Better Frame Timing
-Added proper frame timing to ensure consistent FPS regardless of system load.
-
-### 3. Cleaner Main Function
-`main.cpp` is now much simpler and focuses only on program initialization and error handling.
-
-### 4. Build System
-Added a Makefile for easy compilation and project management.
-
 ## TODO: Next Steps
 
 ### Priority 1 - Core Gameplay
-- [ ] Implement `updatePetFromSystem()` to link system stats to pet needs
-- [ ] Implement `decayStats()` for time-based stat degradation
-- [ ] Implement `updateStatusFlags()` for boolean status flags
 - [ ] Add pet death mechanics
 
 ### Priority 2 - Save/Load
@@ -131,8 +85,6 @@ Added a Makefile for easy compilation and project management.
 - [ ] Warn if pet died while user was gone
 
 ### Priority 3 - Visuals
-- [ ] Different pet sprites for different moods
-- [ ] Color-coded stat bars (green/yellow/red)
 - [ ] Animations or blinking effects
 - [ ] Better layout and spacing
 
@@ -148,44 +100,10 @@ Added a Makefile for easy compilation and project management.
 - [ ] Handle terminal resizing
 - [ ] More commands
 
-## Architecture Notes
-
-### Game Loop Flow
-```
-main()
-  -> Game::init()
-    -> Initialize ncurses
-    -> Initialize renderer
-    -> Load save file
-  -> Game::run()
-    -> while(running):
-      -> update() - Update game state
-      -> handleInput() - Process keyboard
-      -> render() - Draw everything
-      -> Frame timing
-  -> Game::shutdown()
-```
-
-### Data Flow
-```
-/proc filesystem
-    ↓
-readHardwareStats()
-    ↓
-PetState (system metrics)
-    ↓
-updatePetFromSystem() [TODO]
-    ↓
-PetState (pet stats)
-    ↓
-Renderer::draw()
-    ↓
-Terminal display
-```
-
 ## Debugging
 
 The renderer currently shows debug information:
+Press 'd' to turn off/on debug menu
 - CPU usage and raw CPU times
 - Memory stats (total/available)
 - Disk space usage
