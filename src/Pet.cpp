@@ -33,9 +33,9 @@ void cleanPet(PetState& state) {
     clamp(state.pStats);        // clamps the stats
 }
 
-const float cpuUsageToAffectEngery{5};
-const float diskUsageToAffectCleanliness{10};
-const float memUsageToAffectCleanliness{10};
+const float cpuUsageToAffectEngery{5}; // change to which % you want stats to start decaying
+const float diskUsageToAffectCleanliness{10}; // change % here
+const float memUsageToAffectCleanliness{27};  // change % here
 constexpr float ENERY_DECAY{3.0f};  // loses 1 tick of energy every 3 seconds
 constexpr float HUNGER_DECAY{4.0f}; // loses 1 tick of hunger every 4 seconds
 constexpr float CLEAN_DECAY{3.0f};  // loses 1 tick of cleanliness every 3 seconds
@@ -73,6 +73,7 @@ void updatePetFromSystem(PetState& state, float dtSeconds) {
       hungerDebt -= h;
     }
 
+
     clamp(state.pStats);
 }
 
@@ -89,13 +90,13 @@ void updateStatusFlags(PetState& state) {
     state.hasEnergy = (state.pStats.energy >= ENERGY_LOW);
     state.isClean   = (state.pStats.cleanliness >= CLEAN_LOW);
 
-    int critical = 0;
+    int critical{};
     if (state.pStats.hunger <= 0)      critical++;
     if (state.pStats.energy <= 0)      critical++;
     if (state.pStats.cleanliness <= 0) critical++;
     if (state.pStats.happiness <= 0)   critical++;
 
-    state.isAlive = (critical < 2);
+    state.isAlive = (critical < 2); // pet dies when 2 or more stats reach 0
 }
 
 const char* getPetStatusMsg(const PetState& state) {
@@ -106,6 +107,6 @@ const char* getPetStatusMsg(const PetState& state) {
     if (state.isHungry)    return "SUSTANANCE PLZZZZ";
     if (!state.isHappy)    return "I could use a friend...";
 
-    return "Doing better than most bots :)";
+    return "Doing better than most potties :)";
 }
 

@@ -3,6 +3,7 @@
 #include "Renderer.hpp"
 #include "proc.hpp"
 #include "Pet.hpp"
+#include <cfloat>
 #include <ncurses.h>
 #include <algorithm>
 #include <inttypes.h>
@@ -49,6 +50,12 @@ static const char* SLEEPY_CAT = R"(
  /\_/\
 ( -.- )
  z  z
+)";
+
+static const char* DEAD_CAT = R"(
+ /\_/\
+( x.x )
+  v v
 )";
 
 void Renderer::init() {
@@ -121,15 +128,20 @@ void Renderer::drawPetVisual(int y, int x, const PetState& state) {
     int colorPair{1};    // Default green for happy
     const char* art = CAT_ART;
 
+
+
     if (state.pStats.happiness < 30) {
         colorPair = 3; // Blue - sad.. :(
         art = SAD_CAT;
-    } else if (state.pStats.energy < 30) {
+    } else if (state.pStats.energy < 40) {
         colorPair = 2;  // Red - tired or angry
         art = ANGRY_CAT;
-    } else if (state.pStats.hunger < 30) {
-        colorPair = 4;
+    } else if (state.pStats.hunger < 25) {
+        colorPair = 4; // Yellow - hungry
         art = HUNGRY_CAT;
+    } else if (state.pStats.energy < 20) {
+        colorPair = 1;
+        art = SLEEPY_CAT;
     }
 
     attron(COLOR_PAIR(colorPair));
@@ -155,6 +167,11 @@ void Renderer::drawPetVisual(int y, int x, const PetState& state) {
     // Prints the last line if there is one
     if (!current.empty()) {
         mvprintw(y + line, x, "%s", current.c_str());
+    }
+
+    if (!state.isAlive) {
+        colorPair = 2; // red for dead
+        art = DEAD_CAT;
     }
 
     // Turns off color
