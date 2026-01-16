@@ -107,6 +107,6 @@ const char* getPetStatusMsg(const PetState& state) {
     if (state.isHungry)    return "SUSTANANCE PLZZZZ";
     if (!state.isHappy)    return "I could use a friend...";
 
-    return "Doing better than most potties :)";
+    return "Doing better than most potties :)"; // (pet bot) lol
 }
 

@@ -59,6 +59,14 @@ make run
 # or
 ./digital-pet
 ```
+```Change variables in Pet.cpp line 36 - 41. Change to how you want the stats to decay
+const float cpuUsageToAffectEngery{5}; // change to which % you want stats to start decaying
+const float diskUsageToAffectCleanliness{10}; // change % here
+const float memUsageToAffectCleanliness{27};  // change % here
+constexpr float ENERY_DECAY{3.0f};  // loses 1 tick of energy every 3 seconds
+constexpr float HUNGER_DECAY{4.0f}; // loses 1 tick of hunger every 4 seconds
+constexpr float CLEAN_DECAY{3.0f};  // loses 1 tick of cleanliness every 3 seconds
+```                                 //
 
 ## Controls
 
