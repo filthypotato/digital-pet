@@ -52,11 +52,6 @@ brew install ncurses
 make
 ```
 
-Or manually:
-```bash
-g++ -std=c++17 -Wall -Wextra *.cpp -o digital-pet -lncurses
-```
-
 ### Run
 
 ```bash
