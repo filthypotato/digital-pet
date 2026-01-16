@@ -33,11 +33,11 @@ void cleanPet(PetState& state) {
     clamp(state.pStats);        // clamps the stats
 }
 
-const float cpuUsageToAffectEngery{30};
+const float cpuUsageToAffectEngery{5};
 const float diskUsageToAffectCleanliness{10};
-const float memUsageToAffectCleanliness{25};
-constexpr float ENERY_DECAY{1.5f};  // loses 1 tick of energy every 1.5 seconds
-constexpr float HUNGER_DECAY{2.0f}; // loses 1 tick of hunger every 2 seconds
+const float memUsageToAffectCleanliness{10};
+constexpr float ENERY_DECAY{3.0f};  // loses 1 tick of energy every 3 seconds
+constexpr float HUNGER_DECAY{4.0f}; // loses 1 tick of hunger every 4 seconds
 constexpr float CLEAN_DECAY{3.0f};  // loses 1 tick of cleanliness every 3 seconds
                                     //
 // function to link system health to pet needs

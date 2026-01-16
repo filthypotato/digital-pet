@@ -31,16 +31,10 @@ int main() {
 
 /* TODO List for Future Development:
 
-
+// Unsure if i want to add decaying stats over time or just based on system metrics
 - Implement decayStats() for time-based stat reduction
   - All stats slowly decrease over time
   - Decay rate should be balanced for gameplay
-
-- Implement updateStatusFlags() to set boolean flags
-  - isHungry = (hunger < 30)
-  - isHappy = (happiness > 50)
-  - hasEnergy = (energy > 30)
-  - isClean = (cleanliness > 30)
 
 - Add pet death condition
   - Pet dies when multiple stats are critically low

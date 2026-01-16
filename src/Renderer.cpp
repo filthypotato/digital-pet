@@ -39,6 +39,18 @@ static const char* ANGRY_CAT = R"(
  > ^
 )";
 
+static const char* HUNGRY_CAT = R"(
+ /\_/\
+( o.o )
+ > ~ <
+)";
+
+static const char* SLEEPY_CAT = R"(
+ /\_/\
+( -.- )
+ z  z
+)";
+
 void Renderer::init() {
     getmaxyx(stdscr, m_height, m_width);
 }
@@ -107,17 +119,23 @@ void Renderer::drawFrame() {
 void Renderer::drawPetVisual(int y, int x, const PetState& state) {
 
     int colorPair{1};    // Default green for happy
+    const char* art = CAT_ART;
 
     if (state.pStats.happiness < 30) {
-      colorPair = 3; // Blue - sad.. :(
+        colorPair = 3; // Blue - sad.. :(
+        art = SAD_CAT;
     } else if (state.pStats.energy < 30) {
-      colorPair = 2;  // Red - tired or angry
+        colorPair = 2;  // Red - tired or angry
+        art = ANGRY_CAT;
+    } else if (state.pStats.hunger < 30) {
+        colorPair = 4;
+        art = HUNGRY_CAT;
     }
 
     attron(COLOR_PAIR(colorPair));
 
     int line{};
-    const char* p = CAT_ART;
+    const char* p = art;
     std::string current;
 
     // Go through each character in the art

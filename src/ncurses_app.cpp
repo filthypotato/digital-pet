@@ -4,6 +4,7 @@
 
 #include "ncurses_app.hpp"
 #include "Renderer.hpp"
+#include <ncurses.h>
 
 // Constructor - start with app running
 NcursesApp::NcursesApp()
@@ -37,7 +38,8 @@ void NcursesApp::init() {
         init_pair(1, COLOR_GREEN, COLOR_BLACK);  // Happy = green
         init_pair(2, COLOR_RED, COLOR_BLACK);    // Angry = red
         init_pair(3, COLOR_BLUE, COLOR_BLACK);   // Sad = blue
-
+        init_pair(4, COLOR_YELLOW, COLOR_BLACK); // Yellow = hungry
+        init_pair(5, COLOR_CYAN, COLOR_BLACK);   // Cyan = Sleepy
         // When drawing:
         attron(COLOR_PAIR(1));  // Turn on green
         attroff(COLOR_PAIR(1)); // Turn off green
