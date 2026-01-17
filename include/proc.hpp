@@ -22,6 +22,9 @@ struct MemInfo {
 
 struct UptimeInfo {
     double uptimeSeconds{};
+    long hours{};
+    long minutes{};
+    long seconds{};
 };
 
 struct DiskInfo {

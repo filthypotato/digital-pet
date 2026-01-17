@@ -9,20 +9,14 @@ public:
     Game();
     ~Game();
 
-    // Init game
     void init();
-
-    // Runs the main game loop
     void run();
-
-    // clean up function and shutdown
     void shutdown();
 
 private:
     // Updates game logic during main loop
     void update(float dtSeconds);
 
-    // user input
     void handleInput();
 
     // Renders the current frame its at

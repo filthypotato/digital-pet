@@ -88,7 +88,12 @@ void Renderer::draw(const PetState& state) {
     mvprintw(19, 2, "CPU: %d%%", state.sMetrics.cpuPet);
     mvprintw(24, 2, "MEM: %d%%", state.sMetrics.memPet);
     printBytes(29, 2, "DISK", state.diskOut.usedBytes);
-    mvprintw(32, 2, "UPTIME: %.1f s", state.uptimeOut.uptimeSeconds);
+    mvprintw(33, 2, "Uptime: %02ld:%02ld:%02ld",
+                       state.uptimeOut.hours,
+                       state.uptimeOut.minutes,
+                       state.uptimeOut.seconds
+                );
+
 
     if (state.showDebug) {
       mvprintw(14, 2, "Press 'd' to turn off debug mode.");
@@ -113,6 +118,7 @@ void Renderer::draw(const PetState& state) {
 
       // /proc/uptime
       mvprintw(31, 2, "Uptime Info:");
+      mvprintw(32, 2, "UPTIME: %.1f s", state.uptimeOut.uptimeSeconds);
 
     }
     refresh();
@@ -128,7 +134,7 @@ void Renderer::drawPetVisual(int y, int x, const PetState& state) {
     int colorPair{1};    // Default green for happy
     const char* art = CAT_ART;
 
-    // Check death FIRST - most important state!
+    // Checks death first - top priority and takes over if ded
     if (!state.isAlive) {
         colorPair = 2; // red for dead
         art = DEAD_CAT;
@@ -250,7 +256,4 @@ void Renderer::clearEvents() {
 
 
 
-// TODO: Add drawSystemInfo implementation to show CPU, memory, etc.
-// TODO: Add color to bars (red for low, green for high)
-// TODO: Add different pet sprites based on mood
 // TODO: Add blinking or animation to the pet

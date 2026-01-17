@@ -2,7 +2,14 @@
 #include "Pet.hpp"
 
 
-
+const float cpuUsageToAffectEngery{25}; // change to which % you want stats to start decaying
+const float diskUsageToAffectCleanliness{10}; // change % here
+const float memUsageToAffectHunger{45};  // change % here
+const float uptimeToAffectHappiness{300}; // change seconds here
+constexpr float ENERY_DECAY{3.0f};  // loses 1 tick of energy every 3 seconds
+constexpr float HUNGER_DECAY{4.0f}; // loses 1 tick of hunger every 4 seconds
+constexpr float CLEAN_DECAY{3.0f};  // loses 1 tick of cleanliness every 3 seconds
+constexpr float HAPPY_DECAY{3.0f};
 
 
 // clamps stats to avoid going under 0 or passed 100
@@ -33,21 +40,13 @@ void cleanPet(PetState& state) {
     clamp(state.pStats);        // clamps the stats
 }
 
-const float cpuUsageToAffectEngery{5}; // change to which % you want stats to start decaying
-const float diskUsageToAffectCleanliness{10}; // change % here
-const float memUsageToAffectHunger{27};  // change % here
-const float uptimeToAffectHappiness{300}; // change seconds here
-constexpr float ENERY_DECAY{3.0f};  // loses 1 tick of energy every 3 seconds
-constexpr float HUNGER_DECAY{4.0f}; // loses 1 tick of hunger every 4 seconds
-constexpr float CLEAN_DECAY{3.0f};  // loses 1 tick of cleanliness every 3 seconds
-constexpr float HAPPY_DECAY{3.0f};
-
 // function to link system health to pet needs
 void updatePetFromSystem(PetState& state, float dtSeconds) {
     static float energyDebt{};
     static float cleanDebt{};
     static float hungerDebt{};
     static float happyDebt{};
+
 
     // subtract whole numbers from pets stats at the correct speed with fractional decay
     if (state.sMetrics.cpuPet > cpuUsageToAffectEngery)
@@ -65,7 +64,7 @@ void updatePetFromSystem(PetState& state, float dtSeconds) {
     int e = static_cast<int>(energyDebt);
     int c = static_cast<int>(cleanDebt);
     int h = static_cast<int>(hungerDebt);
-    int ha = static_cast <int>(happyDebt);
+    int ha = static_cast<int>(happyDebt);
 
     if (e > 0) {
       state.pStats.energy -= e;

@@ -183,17 +183,24 @@ bool readUptime(UptimeInfo& uptimeOut) {
     if (!uptimeFile.is_open())
       return false;
 
-    double uptimeSec{};
-    double idleSec{}; // adding this just in case i want to do something
+    double uptimeSecRaw{};
+    double idleSecRaw{}; // adding this just in case i want to do something
                       // with idle times later
+
+
     // /proc/uptime  <totalUptime>  <idle time>
-    if (!(uptimeFile >> uptimeSec >> idleSec))
+    if (!(uptimeFile >> uptimeSecRaw >> idleSecRaw))
       return false;
 
+    long uptimeSec = static_cast<long>(uptimeSecRaw);
+    // to convers uptimeSec to HH:MM:SS for readability
+
     uptimeOut.uptimeSeconds = uptimeSec;
+    uptimeOut.hours = uptimeSec / 3600;
+    uptimeOut.minutes = (uptimeSec % 3600) / 60;
+    uptimeOut.seconds = uptimeSec % 60;
 
-
-  return true;
+    return true;
 
 }
 
