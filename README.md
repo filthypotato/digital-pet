@@ -60,8 +60,8 @@ make run
 ./digital-pet
 ```
 
-```
-Change variables in Pet.cpp line 36 - 41. Change to how you want the stats to decay
+```bash
+Change variables in Pet.cpp. Change to how you want the stats to decay
 
 const float cpuUsageToAffectEngery{5}; // change to which % you want stats to start decaying
 const float diskUsageToAffectCleanliness{10}; // change % here
@@ -82,24 +82,21 @@ constexpr float CLEAN_DECAY{3.0f};  // loses 1 tick of cleanliness every 3 secon
 
 ## TODO: Next Steps
 
-### Priority 1 - Core Gameplay
-- [ ] Add pet death mechanics
 
-### Priority 2 - Save/Load
+### Priority 1 - Save/Load
 - [ ] Track time elapsed since last save
-- [ ] Apply decay based on time away
-- [ ] Warn if pet died while user was gone
+- [ ] Apply decay based on time away - maybe
+- [ ] Warn if pet died while user was gone - part of above, mabe
 
-### Priority 3 - Visuals
+### Priority 2 - Visuals
 - [ ] Animations or blinking effects
 - [ ] Better layout and spacing
 
-### Priority 4 - System Info
+### Priority 3 - System Info
 - [ ] Dedicated panel for system metrics
 - [ ] Visual health indicators
-- [ ] Readable uptime format
 
-### Priority 5 - Polish
+### Priority 4 - Polish
 - [ ] Pet naming
 - [ ] Age counter
 - [ ] Achievements system
@@ -115,15 +112,13 @@ Press 'd' to turn off/on debug menu
 - Disk space usage
 - System uptime
 
-This debug info will be cleaned up once the system-to-pet mechanics are implemented.
 
 ## Known Issues
 
 1. Terminal resizing not handled gracefully
 2. No time-based stat decay yet
 3. System metrics don't affect pet yet
-4. Pet can't die yet
-5. Save/load doesn't track time away
+4. Save/load doesn't track time away
 
 
 ## License
