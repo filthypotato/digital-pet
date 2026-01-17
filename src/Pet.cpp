@@ -2,16 +2,6 @@
 #include "Pet.hpp"
 
 
-const float cpuUsageToAffectEngery{25}; // change to which % you want stats to start decaying
-const float diskUsageToAffectCleanliness{10}; // change % here
-const float memUsageToAffectHunger{45};  // change % here
-const float uptimeToAffectHappiness{300}; // change seconds here
-constexpr float ENERY_DECAY{3.0f};  // loses 1 tick of energy every 3 seconds
-constexpr float HUNGER_DECAY{4.0f}; // loses 1 tick of hunger every 4 seconds
-constexpr float CLEAN_DECAY{3.0f};  // loses 1 tick of cleanliness every 3 seconds
-constexpr float HAPPY_DECAY{3.0f};
-
-
 // clamps stats to avoid going under 0 or passed 100
 static void clamp(PetStats& s) {
     s.hunger      = std::clamp(s.hunger, 0, 100);
@@ -42,45 +32,42 @@ void cleanPet(PetState& state) {
 
 // function to link system health to pet needs
 void updatePetFromSystem(PetState& state, float dtSeconds) {
-    static float energyDebt{};
-    static float cleanDebt{};
-    static float hungerDebt{};
-    static float happyDebt{};
+    auto& t = state.tuning;
+    auto& d = state.debt;
+
+    if (state.sMetrics.cpuPet > t.cpuUsage)
+        d.energy += (1.0f / t.energyDecaySec) * dtSeconds;
+
+    if (state.sMetrics.diskPet > t.diskCleanUsage)
+        d.clean += (1.0f / t.cleanDecaySec) * dtSeconds;
+
+    if (state.sMetrics.memPet > t.memUsage)
+        d.hunger += (1.0f / t.hungerDecaySec) * dtSeconds;
+
+    if (state.sMetrics.uptimePet > t.uptime)
+        d.happy += (1.0f / t.energyDecaySec) * dtSeconds;
 
 
-    // subtract whole numbers from pets stats at the correct speed with fractional decay
-    if (state.sMetrics.cpuPet > cpuUsageToAffectEngery)
-        energyDebt += (1.0f / ENERY_DECAY) * dtSeconds; // divide 1.0f by decay * dtSeconds
-                                          // no decay unless thresholds are bad
-    if (state.sMetrics.diskPet > diskUsageToAffectCleanliness)
-        cleanDebt += (1.0f / CLEAN_DECAY) * dtSeconds; // divide 1.0f by decay * dtSeconds
-
-    if (state.sMetrics.memPet > memUsageToAffectHunger)
-        hungerDebt += (1.0f / HUNGER_DECAY) * dtSeconds; // divide 1.0f by decay * dtSeconds
-
-    if (state.sMetrics.uptimePet > uptimeToAffectHappiness)
-        happyDebt += (1.0f / HAPPY_DECAY) * dtSeconds;
-
-    int e = static_cast<int>(energyDebt);
-    int c = static_cast<int>(cleanDebt);
-    int h = static_cast<int>(hungerDebt);
-    int ha = static_cast<int>(happyDebt);
+    const int e = static_cast<int>(d.energy);
+    const int c = static_cast<int>(d.clean);
+    const int h = static_cast<int>(d.hunger);
+    const int ha = static_cast<int>(d.happy);
 
     if (e > 0) {
       state.pStats.energy -= e;
-      energyDebt -= e;
+      d.energy -= e;
     }
     if (c > 0) {
       state.pStats.cleanliness -= c;
-      cleanDebt -= c;
+      d.clean -= c;
     }
     if (h > 0) {
       state.pStats.hunger -= h;
-      hungerDebt -= h;
+      d.hunger -= h;
     }
     if (ha > 0) {
         state.pStats.happiness -= ha;
-        happyDebt -= ha;
+        d.happy -= ha;
     }
 
     // Clamp stats after decay to ensure they stay in valid range
@@ -89,10 +76,7 @@ void updatePetFromSystem(PetState& state, float dtSeconds) {
 }
 
 void updateStatusFlags(PetState& state) {
-    constexpr int HUNGER_LOW{30};
-    constexpr int HAPPY_LOW{35};
-    constexpr int ENERGY_LOW{25};
-    constexpr int CLEAN_LOW{15};
+   const auto& t = state.tuning;
 
     clamp(state.pStats);
 
@@ -104,13 +88,13 @@ void updateStatusFlags(PetState& state) {
         (state.pStats.cleanliness == 0);
 
     // Pet dies when 2 stats hit 0
-    state.isAlive  = (critical < 2);
+    state.isAlive  = (critical < t.deathCritZeros);
 
     // Update other status flags
-    state.isHungry = (state.pStats.hunger <= HUNGER_LOW);
-    state.isHappy  = (state.pStats.happiness >= HAPPY_LOW);
-    state.hasEnergy= (state.pStats.energy >= ENERGY_LOW);
-    state.isClean  = (state.pStats.cleanliness >= CLEAN_LOW);
+    state.isHungry = (state.pStats.hunger <= t.hungerLow);
+    state.isHappy  = (state.pStats.happiness >= t.happyLow);
+    state.hasEnergy= (state.pStats.energy >= t.energyLow);
+    state.isClean  = (state.pStats.cleanliness >= t.cleanLow);
 }
 
 

@@ -6,13 +6,14 @@ set -euo pipefail
 # ./build.sh                 # Debug build
 # ./build.sh --debug         # Explicit debug
 # ./build.sh --release       # Optimized release
-# ./build.sh --clean         # Nuke build dir
+# ./build.sh --clean         # Nuke build dir and save file
 # ./build.sh --clean --run   # Clean → build → run
 # ./build.sh --release --run
 
 # Config
 BUILD_DIR="build"
 BUILD_TYPE="Debug"
+SAVE_FILE="savegame.dat"
 RUN_AFTER_BUILD=0
 CLEAN=0
 
@@ -38,6 +39,7 @@ done
 if [[ "$CLEAN" -eq 1 ]]; then
   echo ":P Cleaning build directory"
   rm -rf "$BUILD_DIR"
+  rm -rf "$SAVE_FILE"
 fi
 
 # Build

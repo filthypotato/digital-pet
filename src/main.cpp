@@ -31,13 +31,15 @@ int main() {
 
 /* TODO List for Future Development:
 
+
+
 // Unsure if i want to add decaying stats over time or just based on system metrics
 - Implement decayStats() for time-based stat reduction
   - All stats slowly decrease over time
   - Decay rate should be balanced for gameplay
 
 - Add pet death condition
-  - Pet dies when multiple stats are critically low
+  - Add create new pet when pet dies
   - Or after extended period without care
 
 Save/Load System:
@@ -47,7 +49,6 @@ Save/Load System:
 - Add warning if pet died while user was away
 
 Enhanced Visuals:
-- Add different pet sprites for different moods
 - Add color coding to stat bars (green/yellow/red)
 - Add animations or blinking effects
 - Improve layout and spacing

@@ -16,6 +16,7 @@ Your pet's stats are also affected by your computer's system metrics:
 - High memory usage makes the pet hungry
 
 
+
 ## Building the Project
 
 ### Prerequisites
@@ -97,6 +98,7 @@ constexpr float CLEAN_DECAY{3.0f};  // loses 1 tick of cleanliness every 3 secon
 - [ ] Visual health indicators
 
 ### Priority 4 - Polish
+- [ ] Add pet levels
 - [ ] Pet naming
 - [ ] Age counter
 - [ ] Achievements system
@@ -118,7 +120,6 @@ Press 'd' to turn off/on debug menu
 1. Terminal resizing not handled gracefully
 2. No time-based stat decay yet
 3. System metrics don't affect pet yet
-4. Save/load doesn't track time away
 
 
 ## License
