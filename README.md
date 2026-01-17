@@ -62,14 +62,30 @@ make run
 ```
 
 ```bash
-Change variables in Pet.cpp. Change to how you want the stats to decay
+Change variables in Pet.hpp. Change to how you want the stats to decay
 
-const float cpuUsageToAffectEngery{5}; // change to which % you want stats to start decaying
-const float diskUsageToAffectCleanliness{10}; // change % here
-const float memUsageToAffectCleanliness{27};  // change % here
-constexpr float ENERY_DECAY{3.0f};  // loses 1 tick of energy every 3 seconds
-constexpr float HUNGER_DECAY{4.0f}; // loses 1 tick of hunger every 4 seconds
-constexpr float CLEAN_DECAY{3.0f};  // loses 1 tick of cleanliness every 3 seconds
+struct PetTuning {
+  // % of when stats start to decay. 25 = 25%, 38 = 38%, 58 = 58% etc.
+  float cpuUsage = 25.0f;
+  float diskCleanUsage = 10.0f;
+  float memUsage = 45.0f;
+  float uptime = 10000.0f;
+
+  // speed of decaying stats
+  float energyDecaySec = 3.0f;
+  float hungerDecaySec = 4.0f;
+  float cleanDecaySec  = 3.0f;
+  float happyDecaySec  = 3.0f;
+
+  // when stats drop to a certain level
+  int hungerLow{30};
+  int happyLow{35};
+  int energyLow{25};
+  int cleanLow{15};
+
+  int deathCritZeros{2}; // how many stats to hit 0 for pet to die
+};
+
 ```
 
 ## Controls
